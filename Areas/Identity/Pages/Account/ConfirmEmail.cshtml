@@ -1,0 +1,18 @@
+﻿@page
+@model ConfirmEmailModel
+@{
+    Layout = "/Views/Shared/_LoginLayout.cshtml";
+    ViewData["Title"] = "Confirm email";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="card">
+    
+    <div class="card-body">
+        <p>@Model.StatusMessage</p>
+
+        <a class="btn btn-primary btn-lg btn-block" asp-area="Identity" asp-page="/Account/Login"><i class="fa fa-sign-in"></i><span> SIGN IN</span></a>
+
+    </div>
+</div>

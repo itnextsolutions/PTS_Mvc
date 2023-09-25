@@ -1,0 +1,30 @@
+﻿@model MVC_BugTracker.Models.RotationShift
+
+<div>
+   
+    <dl class="row">
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.Shift_type)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.Shift_type)
+        </dd>
+
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.StartTime)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.StartTime)
+        </dd>
+
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.EndTime)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.EndTime)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="AllShift">Back to List</a>
+</div>

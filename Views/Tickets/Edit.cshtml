@@ -1,0 +1,242 @@
+﻿
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model MVC_BugTracker.Models.ViewModels.TicketTaskViewModel
+@using MVC_BugTracker.Services.Interfaces
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<BTUser> _userManager
+
+@{
+    ViewData["Title"] = "Edit";
+
+    // UserId
+    string userId = _userManager.GetUserId(User);
+}
+
+@* <h1>Edit Ticket for @ViewData["ProjectName"]</h1>
+
+<hr /> *@
+
+<partial name="_StatusMessage" model="@TempData["StatusMessage"]" />
+
+
+<div class="card card-primary" style="border:none!important;box-shadow:none!important;padding-bottom:0px!important">
+    @* <div class="card-header">Edit Ticket</div> *@
+    <div class="card-body">
+
+        <form asp-action="Edit">
+
+            <div class="row">
+                <div class="col-md-7">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />
+                    <input type="hidden" asp-for="tic.Id" />
+                    <input type="hidden" asp-for="tic.ProjectId" />
+                    <input type="hidden" asp-for="tic.Created" />
+                    <input type="hidden" asp-for="tic.Updated" />
+                    <input type="hidden" asp-for="tic.Archived" />
+                    <input type="hidden" asp-for="tic.ArchivedDate" />
+
+
+                    <div class="form-group">
+                        <label asp-for="tic.Title" class="control-label"></label>
+                        <input asp-for="tic.Title" class="form-control" required />
+                        <span asp-validation-for="tic.Title" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="tic.Description" class="control-label"></label>
+                        <textarea asp-for="tic.Description"
+                                  class="form-control"
+                                  style="height:210px" required></textarea>
+                        <span asp-validation-for="tic.Description" class="text-danger"></span>
+                    </div>
+                    
+                 
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label asp-for="tic.StartDate" class="control-label"></label>
+                                <input asp-for="tic.StartDate" class="form-control" required />
+                                <span asp-validation-for="tic.StartDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label asp-for="tic.DueDate" class="control-label"></label>
+                                <input asp-for="tic.DueDate" class="form-control" required />
+                                <span asp-validation-for="tic.DueDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col">
+
+                    <div class="form-group">
+                        <label asp-for="tic.TicketTypeId" class="control-label"></label>
+                        <select asp-for="tic.TicketTypeId" class="form-control" asp-items="ViewBag.TicketTypeId">
+                            <option value="">Select a Ticket Type</option>
+                        </select>
+                        <span asp-validation-for="tic.TicketTypeId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="tic.TicketPriorityId" class="control-label"></label>
+                        <select asp-for="tic.TicketPriorityId" class="form-control" asp-items="ViewBag.TicketPriorityId">
+                            <option value="">Select a Ticket Priority</option>
+                        </select>
+                        <span asp-validation-for="tic.TicketPriorityId" class="text-danger"></span>
+                    </div>
+
+                    <!-- Submitter Cannot Change the Ticket Status (also check if id matches OwnerId) -->
+                    @if (User.IsInRole("Submitter") || Model.tic.OwnerUserId == userId)
+                    {
+                        <input type="hidden" asp-for="tic.TicketStatusId" />
+                    }
+                    else
+                    {
+                        <div class="form-group">
+                            <label asp-for="tic.TicketStatusId" class="control-label"></label>
+                            <select asp-for="tic.TicketStatusId" class="form-control" asp-items="ViewBag.TicketStatusId">
+                                <option value="">Select a Ticket Status</option>
+                            </select>
+                            <span asp-validation-for="tic.TicketStatusId" class="text-danger"></span>
+                        </div>
+                    }
+
+
+
+                    <!-- Admin Only -->
+                    @if (User.IsInRole("Admin"))
+                    {
+
+                        <div class="form-group">
+                            <label asp-for="tic.OwnerUserId" class="control-label"></label>
+                            <select asp-for="tic.OwnerUserId" class="form-control" asp-items="ViewBag.OwnerUserId">
+                                <option value="">Select a Submitter</option>
+                            </select>
+                            <span asp-validation-for="tic.OwnerUserId" class="text-danger"></span>
+                        </div>
+
+                    }
+                    else
+                    {
+                        <input type="hidden" asp-for="tic.OwnerUserId" />
+
+                    }
+
+                    <!-- Admin and PM Only -->
+                    @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+                    {
+                        <div class="form-group">
+                            <label asp-for="tic.DeveloperUserId" class="control-label"></label>
+                            <select asp-for="tic.DeveloperUserId" class="form-control" asp-items="ViewBag.DeveloperUserId">
+                                <option value="">Select a Developer</option>
+                            </select>
+                            <span asp-validation-for="tic.DeveloperUserId" class="text-danger"></span>
+                        </div>
+
+                    }
+                    else
+                    {
+                        <input type="hidden" asp-for="tic.DeveloperUserId" />
+                    }
+
+
+                   
+
+
+                    <!-- End Admin and PM Only-->
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="card card-primary collapsed-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Tasks Details</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+
+                            <!-- /.card-tools -->
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+
+
+
+                            <table class="table table-bordered" style="width: 100% !important" id="dataTableEdit">
+                                <tr>
+                                    <th>Task Title</th>
+                                    <th>Task Description</th>
+                                    <th></th>
+                                </tr>
+                                @for (int j = 0; j < Model.TaskViewModels.Count; j++)
+                                {
+                                    <tr style="border: 1px solid black">
+                                        <td style="margin-top:12px">
+                                            @* <input type="hidden" asp-for="TaskViewModels[j].TicketTaskId" /> *@
+                                            @* <input type="hidden" asp-for="TaskViewModels[j].TicketId" />  *@
+                                            <input  type="text" name="TaskViewModels[@j].TaskTitle"
+                                                   class="form-control" placeholder="Task Title" required
+                                                   value="@Model.TaskViewModels[j].TaskTitle" />
+                                        </td>
+                                        <td>
+                                            <textarea name="TaskViewModels[@j].TaskDescription"
+                                                      class="form-control" placeholder="Task Description" required>@Model.TaskViewModels[j].TaskDescription</textarea>
+                                        </td>
+                                        <td>
+                                            <a href="#" onclick="removal(event)">Remove</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+
+
+
+
+                            <input type="hidden" id="taskCountEdit" name="taskCountEdit" value="@Model.TaskViewModels.Count" />
+                            <button type="button" onclick="addNewEdit()">Add Task</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <hr />
+                    <div class="form-group float-right">
+                        <input type="submit" value="Save" class="btn btn-primary" />
+                        <a class="btn btn-secondary" href="@ViewBag.returnUrl">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+<div>
+    @*<a asp-action="AllTickets">Back to List</a>*@
+    @*<a href="@ViewBag.returnUrl">Return to Previous Page</a>*@
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery -->
+
+   
+
+        }
+

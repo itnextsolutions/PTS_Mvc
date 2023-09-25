@@ -1,0 +1,229 @@
+﻿
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@* @model MVC_BugTracker.Models.BTUser *@
+@model MVC_BugTracker.Models.ViewModels.MemberEditViewModel
+@using MVC_BugTracker.Services.Interfaces
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<BTUser> _userManager
+
+@{
+    ViewData["Title"] = "Edit";
+
+    // UserId
+    string userId = _userManager.GetUserId(User);
+}
+
+@* <h1>Edit Members for @ViewData["FirstName"]</h1> *@
+
+@* <hr /> *@
+
+<partial name="_StatusMessage" model="@TempData["StatusMessage"]" />
+
+
+<div class="card card-primary" style="border:none!important;box-shadow:none!important;">
+    @* <div class="card-header">Edit Members</div> *@
+    <div class="card-body">
+
+        <form asp-action="Edit">
+
+            @*<div class="row">*@
+            <div>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />
+                <input type="hidden" asp-for="@Model.Id" />
+               
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-6 col-lg-6 col-sm-6 col-12">
+                    <label asp-for="FirstName" class="control-label"></label>
+                    <input asp-for="FirstName" class="form-control" required >
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group col-md-6 col-lg-6 col-sm-6 col-12">
+                    <label asp-for="LastName" class="control-label"></label>
+                    <input asp-for="LastName" class="form-control" required>
+                  @*   <textarea asp-for="LastName"
+                              class="form-control" required
+                              style="height:40px"></textarea> *@
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-md-6 col-lg-6 col-sm-6 col-12">
+                    <label asp-for="UserName" class="control-label"></label>
+                    <input asp-for="UserName" class="form-control" required>
+                   @*  <textarea asp-for="@Model.UserName"
+                              class="form-control" required
+                              style="height:40px"></textarea> *@
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+
+
+                </div>
+
+                <div class="form-group col-md-6 col-lg-6 col-sm-6 col-12">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" required>
+                  @*   <textarea asp-for="Email"
+                              class="form-control" required
+                              style="height:40px"></textarea> *@
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-md-6 col-lg-6 col-sm-6 col-12">
+                    <label asp-for="PhoneNumber" class="control-label"></label>
+                    <input asp-for="PhoneNumber" class="form-control" required>
+                  @*   <textarea asp-for="@Model.PhoneNumber"
+                              class="form-control" required
+                              style="height:40px"></textarea> *@
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6 col-lg-6 col-sm-6 col-12">
+                    <label asp-for="ShiftId"></label>
+                    <select class="form-control" asp-for="ShiftId" asp-items="Model.ShiftList">
+                        <option value="">Select Shift</option>
+                    </select>
+                    <span asp-validation-for="ShiftId" class="text-danger"></span>
+                </div>
+
+                @*  <div class="form-group col-md-6 col-lg-6 col-sm-6 col-12">
+                <label asp-for="Password" class="control-label"></label>
+                <input  asp-for="Password"
+                class="form-control" required
+                style="height:40px"/>
+                <span asp-validation-for="Password" class="text-danger"></span>
+                </div> *@
+                <div class="form-group col-md-6 col-lg-6 col-sm-6 col-12">
+                    <label asp-for="Password" class="control-label"></label>
+                    <div class="password-input-container" style="    display: flex;
+    justify-content: flex-start">
+                        <input type="password" class="form-control col-md-6 col-lg-6 col-sm-6 col-12  password-input" id="password" 
+                        name="password" asp-for="Password" value="@Model.Password" required  >
+                        <div class="input-group-append" onclick="show()">
+                            <div class="input-group-text">
+                                <span>
+                                    <i class="fas fa-eye-slash" id="togglePassword"></i>
+                                </span>
+
+                            </div>
+                        </div>
+                        <div class="input-group-append">
+                            <div class="input-group-text" onclick="copy()">
+                                <span>
+                                    <i class="fas fa-copy" id="copyPassword"></i>
+                                </span>
+                            </div>
+                        </div>
+                        @*   <i class="fas fa-eye-slash" id="togglePassword"></i>
+                        <i class="fas fa-copy" id="copyPassword"></i></input> *@
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <hr />
+                    <div class="form-group float-right">
+                        <input type="submit" value="Save" class="btn btn-primary" />
+                        <a class="btn btn-secondary" href="@ViewBag.returnUrl">Cancel</a>
+                       
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+  @*   <script>
+        $('document').ready(function () { 
+            console.log("ready")
+     
+        document.addEventListener("DOMContentLoaded", function () {
+            
+            const passwordInput = document.getElementById("password");
+            console.log(passwordInput)
+            const togglePassword = document.getElementById("togglePassword");
+            const copyPassword = document.getElementById("copyPassword");
+
+            // Function to toggle password visibility
+            togglePassword.addEventListener("click", function () {
+                if (passwordInput.type === "password") {
+                    passwordInput.type = "text";
+                    togglePassword.classList.remove("fa-eye-slash");
+                    togglePassword.classList.add("fa-eye");
+                } else {
+                    passwordInput.type = "password";
+                    togglePassword.classList.remove("fa-eye");
+                    togglePassword.classList.add("fa-eye-slash");
+                }
+            });
+
+            // Function to copy the password to the clipboard
+            copyPassword.addEventListener("click", function () {
+                passwordInput.select();
+                document.execCommand("copy");
+                // Optionally, you can provide user feedback here
+                alert("Password copied to clipboard");
+            });
+        });
+        })
+    </script> *@
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery -->
+
+   @*  <script>
+        $(document).ready(function () {
+            console.log("ready");
+
+            function show() {
+                
+                const name = document.getElementById("fname");
+                console.log(name)
+
+         
+            }
+
+            const name = document.getElementById("fname");
+            console.log(name)
+
+
+            const passwordInput = document.getElementById("password");
+            console.log(passwordInput);
+            const togglePassword = document.getElementById("togglePassword");
+            const copyPassword = document.getElementById("copyPassword");
+
+            // Function to toggle password visibility
+            togglePassword.addEventListener("click", function () {
+                console.log(passwordInput)
+                if (passwordInput.type === "password") {
+
+                    passwordInput.type = "text";
+                    togglePassword.classList.remove("fa-eye-slash");
+                    togglePassword.classList.add("fa-eye");
+                } else {
+                    passwordInput.type = "password";
+                    togglePassword.classList.remove("fa-eye");
+                    togglePassword.classList.add("fa-eye-slash");
+                }
+            });
+
+            // Function to copy the password to the clipboard
+            copyPassword.addEventListener("click", function () {
+                passwordInput.select();
+                document.execCommand("copy");
+                // Optionally, you can provide user feedback here
+                alert("Password copied to clipboard");
+            });
+        });
+
+
+    </script> *@
+}

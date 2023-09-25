@@ -1,0 +1,647 @@
+﻿@model MVC_BugTracker.Models.Project
+@using MVC_BugTracker.Services.Interfaces
+@using Microsoft.AspNetCore.Identity
+
+@inject IBTProjectService _projectService
+@inject IBTRolesService _roleService
+@inject UserManager<BTUser> _userManager
+
+@{
+    ViewData["Title"] = "Project Details";
+
+    BTUser projectManager = await _projectService.GetProjectManagerAsync(Model.Id);
+
+    // Is the current user the PM?
+    string userId = _userManager.GetUserId(User);
+
+    bool isPM = projectManager.Id == userId;
+
+    // Priority formatting colors
+    string priorityColor = "primary";
+
+    switch (@Model.ProjectPriority.Name)
+    {
+        case "Urgent":
+            priorityColor = "danger";
+            break;
+
+        case "High":
+            priorityColor = "warning";
+            break;
+
+        case "Low":
+            priorityColor = "secondary";
+            break;
+
+        default:
+            priorityColor = "primary";
+            break;
+    }
+    // ./ Formatting Colors
+
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<h1>@Model.Name</h1>
+<style>
+    #link button:hover {
+        text-decoration: underline;
+    }
+</style>
+
+
+<!-- Top Menu -->
+<div>
+    <a class="btn-sm btn-secondary mr-1"
+       asp-action="AllProjects">
+        <i class="fas fa-undo-alt"></i> Back to All Clients List
+    </a>
+
+    @if (User.IsInRole("Admin") || isPM)
+    {
+        @* <a class="btn-sm btn-primary mr-1" asp-action="Edit" asp-route-id="@Model.Id">
+            <i class="fas fa-pencil-alt"></i> Edit
+        </a> *@
+        <button class="btn-xs btn-primary" onclick="openEditModal(@Model.Id)"><i class="fas fa-pencil-alt"></i> Edit</button>
+
+    }
+
+    @if (User.IsInRole("Admin"))
+    {
+        // TODO - Add DELETE check
+
+        @* <a class="btn-sm btn-danger mr-1" asp-action="Delete" asp-route-id="@Model.Id">
+            <i class="fas fa-times"></i> Delete
+        </a> *@
+        @* <button class="btn-xs btn-danger" onclick="openDeleteModal(@Model.Id)"><i class="fas fa-times"></i> Delete</button> *@
+    }
+
+</div>
+
+<partial name="_StatusMessage" model="@TempData["StatusMessage"]" />
+
+<!-- ./ End Top Menu -->
+
+<div>
+
+    <hr />
+
+    <!-- Top Section -->
+    <dl class="row">
+
+        <dt class="col-sm-2">
+            Priority
+        </dt>
+        <dd class="col-sm-10">
+            <span class="btn-sm btn-@priorityColor font-weight-bold">@Model.ProjectPriority.Name</span>
+        </dd>
+
+        @*<dt class="col-sm-2">
+            Project Manager
+        </dt>
+        <dd class="col-sm-10">
+            @{
+                var pm = "Add a Project Manager";
+
+                if (projectManager.FirstName != null)
+                {
+                    pm = projectManager?.FullName;
+                }
+
+            }
+
+
+            @pm
+
+
+            @if (User.IsInRole("Admin"))
+            {
+                <div>
+                    <a class="btn-sm btn-primary"
+                       asp-action="AssignPM"
+                       asp-route-id="@Model.Id">
+                        <i class="fas fa-user-plus"></i> Add Project Manager
+                    </a>
+                </div>
+            }
+
+        </dd>*@
+
+        <dt class="col-sm-2">
+            Description
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt class="col-sm-2">
+            Start/End Date
+        </dt>
+        <dd class="col-sm-10">
+            @Model.StartDate.ToString("dd MMM yyyy") - @Model.EndDate.GetValueOrDefault().ToString("dd MMM yyyy")
+        </dd>
+
+
+
+    </dl>
+    
+
+    
+
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- Tickets -->
+            <div class="col-12 col-md-6">
+                <div class="info-box">
+                    <span class="info-box-icon bg-success"><i class="fas fa-tasks"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">Tickets</span>
+                        <span class="info-box-number">@Model.Tickets.Count</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+                <!-- Add Tickets -->
+                <div class="mb-2">
+                    @* <a class="btn-sm btn-primary"
+                       asp-action="Create"
+                       asp-controller="Tickets"
+                       asp-route-projId="@Model.Id">
+                        <i class="fas fa-plus"></i> Create Ticket
+                    </a> *@
+                    <button class="btn-sm btn-primary" onclick="openCreateModal(@Model.Id)"><i class="fas fa-plus"></i> Create Ticket</button>
+                </div>
+
+                <!-- Ticket Card  collapsed-card -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Tickets</h3>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                        <!-- /.card-tools -->
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <!-- TICKETS -->
+
+                        <ul class="nav flex-column">
+
+                            @if (Model.Tickets.Count == 0)
+                            {
+                                <li>Add Tickets</li>
+                            }
+
+                            @foreach (Ticket ticket in Model.Tickets)
+                            {
+                                var developer = "Unassigned";
+                                var devColor = "danger";
+
+                                if (@ticket.DeveloperUser?.FullName != null)
+                                {
+                                    developer = @ticket.DeveloperUser?.FullName;
+                                    devColor = "light";
+                                }
+
+                                
+
+             
+                          
+                                var statusColor = "light";
+
+                                if(ticket.TicketStatus.Name == "Unassigned")
+                                {
+                                    statusColor = "danger";
+                                } else if (ticket.TicketStatus.Name == "Resolved")
+                                {
+                                    statusColor = "success";
+                                }
+
+
+
+                                    <li class="nav-item pb-1 mb-1">
+
+                                        @* Apply restrictions as needed - Admin and PM of this project only *@
+
+                                        @if (User.IsInRole("Admin") || isPM)
+                                        {
+                                            @* <a class="badge badge-primary mr-2"
+                                               asp-action="Edit"
+                                               asp-controller="Tickets"
+                                               asp-route-id="@ticket.Id">Edit</a> *@
+                                        <a href="#" class="badge badge-primary mr-2" style="border:none" onclick="openEditModalTicket(@ticket.Id)"> Edit</a>
+                                        }
+
+                                        <a asp-action="TicketDetails"
+                                           asp-controller="Tickets"
+                                           asp-route-id="@ticket.Id">
+                                            @ticket.Title
+                                        </a>
+
+                                        @*<span class="badge bg-@statusColor ml-2"> @ticket.TicketStatus.Name</span>*@
+                                    <span class="float-right badge bg-@devColor">@developer</span>
+                                        <span class="float-right badge">@ticket.DueDate?.ToString("dd MMM yyyy")</span>
+                                        
+                            
+
+                                    </li>
+                            }
+                        </ul>
+
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+            </div>
+
+            <!-- Members -->
+            <div class="col">
+                <div class="info-box">
+                    <span class="info-box-icon bg-warning"><i class="fas fa-users"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">Members</span>
+                        <span class="info-box-number">@Model.Members.Count</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+                
+                <div class="mb-2">
+                    <!-- Add Project Manager -->
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a class="btn-sm btn-primary mr-1"
+                            asp-action="AssignPM"
+                            asp-route-id="@Model.Id">
+                            <i class="fas fa-user-plus"></i> Add Project Manager
+                        </a>
+                    }
+
+                    <!-- Add Members -->
+                    @if (User.IsInRole("Admin") || isPM)
+                    {
+                        <a class="btn-sm btn-primary"
+                            asp-action="AssignUsers"
+                            asp-route-id="@Model.Id"><i class="fas fa-user-plus"></i> Add Team Members
+                        </a>
+                    }
+                    else
+                    {
+                        <span>Speak with your Admin or Assigned PM to add team members</span>
+                    }
+                </div>
+                
+
+                <!-- Team Members collapsed-card -->
+                <div class="card card-primary ">
+                    <div class="card-header">
+                        <h3 class="card-title">Members</h3>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                        <!-- /.card-tools -->
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <!-- MEMBERS -->
+
+                        <ul class="nav flex-column">
+
+                            @if (Model.Members.Count == 0)
+                            {
+                                <li>Add Team Members</li>
+                            }
+
+                            @foreach (BTUser member in Model.Members)
+                            {
+                                var userRole = (await _roleService.ListUserRolesAsync(member)).FirstOrDefault();
+                                var color = "primary";
+
+                                if (userRole == "ProjectManager")
+                                {
+                                    color = "success";
+                                }
+
+                                <li class="nav-item mb-2">
+                                    <span>@member.FullName</span>
+                                    <span class="float-right badge bg-@color">@userRole</span>
+                                </li>
+                            }
+                        </ul>
+
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+                <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content" style="width:150%!important;right:100px">
+                            <div class="modal-header" style="background-color:#007bff; color:white;">
+                                <h5 class="modal-title" id="editModalLabel">Edit Client</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="editFormContainer">
+                                    <!-- Partial view content will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+             
+
+
+
+
+                <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content" style="width:150%!important;right:100px">
+                            <div class="modal-header" style="background-color:#007bff; color:white;">
+                                <h5 class="modal-title" id="createModalLabel">New Ticket</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" style="padding-bottom:0px!important">
+                                <div id="createFormContainer" style="top:0px">
+                                    <!-- Partial view content for creating a new project will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="modal fade" id="editModalTicket" tabindex="-1" role="dialog" aria-labelledby="editModalLabelTicket" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content" style="width:150%!important;right:100px">
+                            <div class="modal-header" style="background-color:#007bff; color:white;">
+                                <h5 class="modal-title" id="editModalLabelTicket">Edit Ticket</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="editFormContainerTicket">
+                                    <!-- Partial view content will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    function openEditModalTicket(id) {
+        
+       
+        $.get('/Tickets/Edit/' + id, function (data) {
+            $('#editFormContainerTicket').html(data);
+            $('#editModalTicket').modal('show');
+        });
+    }</script>
+
+<script>
+    function openEditModal(id) {
+        
+        $.get('/Projects/Edit/' + id, function (data) {
+            $('#editFormContainer').html(data);
+            $('#editModal').modal('show');
+        });
+    }</script>
+
+<script>
+    function openCreateModal(projId) {
+        
+        projId = projId || 0;
+        $.get('/Tickets/Create/' + projId, function (data) {
+            $('#createFormContainer').html(data);
+            $('#createModal').modal('show');
+        });
+    }
+</script>
+
+<script>
+    function resetInputFields($trNew) {
+        $trNew.find(':input[type="text"]').val('');
+        $trNew.find('textarea').val('');
+    }
+
+    // Initialize a counter for tasks
+    var taskCounter = 0;
+
+    // 1. Add new row
+    function addNew() {
+        
+        // e.preventDefault();
+        console.log("Button clicked");
+        var $tableBody = $("#dataTable");
+        var $trNew = $('<tr style="border: 1px solid black"></tr>'); // Create a new row
+
+        // Add TaskTitle input field with validation
+        var taskTitleInputName = "TaskViewModels[" + taskCounter + "].TaskTitle";
+        var $taskTitleInput = $('<td><input type="text" name="' + taskTitleInputName + '" class="form-control" placeholder="Task Title" required data-val="true" data-val-required="Task Title is required" /></td>');
+        $trNew.append($taskTitleInput);
+
+        // Add TaskDescription textarea field with validation
+        var taskDescriptionInputName = "TaskViewModels[" + taskCounter + "].TaskDescription";
+        var $taskDescriptionInput = $('<td><textarea name="' + taskDescriptionInputName + '" class="form-control" placeholder="Task Description" required data-val="true" data-val-required="Task Description is required"></textarea></td>');
+        $trNew.append($taskDescriptionInput);
+
+        // Add Remove link
+        var $removeLink = $('<td><a href="#" class="remove">Remove</a></td>');
+        $removeLink.click(function (e) {
+            e.preventDefault();
+            $trNew.remove(); // Remove the row
+            updateTaskIndices(); // Update task indices after removal
+        });
+        $trNew.append($removeLink);
+
+        $tableBody.append($trNew);
+
+        // Reset input fields
+        resetInputFields($trNew);
+
+        taskCounter++; // Increment the task counter
+    };
+  
+
+    // 2. Remove (Event delegation)
+    $('#dataTable').on("click", 'a.remove', function (e) {
+        e.preventDefault();
+        $(this).closest('tr').remove(); // Find the closest <tr> and remove it
+        updateTaskIndices(); // Update task indices after removal
+    });
+
+    // Function to update task indices after removal
+    function updateTaskIndices() {
+        var $tableBody = $("#dataTable");
+        var $taskRows = $tableBody.find('tr');
+
+        $taskRows.each(function (index, row) {
+            var $row = $(row);
+            var $taskTitleInput = $row.find('input[name^="TaskViewModels"]');
+            var $taskDescriptionInput = $row.find('textarea[name^="TaskViewModels"]');
+
+            // Update the name attributes with the correct index
+            var newIndex = index - 1; // Adjust the index
+            $taskTitleInput.attr('name', 'TaskViewModels[' + newIndex + '].TaskTitle');
+            $taskDescriptionInput.attr('name', 'TaskViewModels[' + newIndex + '].TaskDescription');
+        });
+
+        taskCounter = $taskRows.length - 1; // Update the task counter
+    }
+</script>
+<script>
+   
+    function resetInputFieldsEdit($trNew) {
+        $trNew.find(':input[type="text"]').val('');
+        $trNew.find('textarea').val('');
+    }
+
+    // Function to update task count
+    function updateTaskCountEdit() {
+        var taskCountEdit = $('#dataTableEdit tr').length - 1; // Subtract 1 to exclude the header row
+        $('#taskCountEdit').val(taskCountEdit);
+        updateTaskIndicesEdit();
+    }
+
+    // 1. Add new row
+    function addNewEdit() {
+        // e.preventDefault();
+        var $tableBody = $("#dataTableEdit");
+        var $trNew = $('<tr style="border: 1px solid black"></tr>'); // Create a new row
+
+        // Add TaskTitle input field with validation
+        var $taskTitleInput = $('<td><input type="text" name="TaskViewModels[' + ($('#taskCountEdit').val()) + '].TaskTitle" class="form-control" placeholder="Task Title" required data-val="true" data-val-required="Task Title is required" /></td>');
+        $trNew.append($taskTitleInput);
+
+        // Add TaskDescription textarea field with validation
+        var $taskDescriptionInput = $('<td><textarea name="TaskViewModels[' + ($('#taskCountEdit').val()) + '].TaskDescription" class="form-control" placeholder="Task Description" required data-val="true" data-val-required="Task Description is required"></textarea></td>');
+        $trNew.append($taskDescriptionInput);
+
+        // Add Remove link
+        var $removeLink = $('<td><a href="#"  onclick="removal(event)">Remove</a></td>');
+        $removeLink.click(function (e) {
+            e.preventDefault();
+            $trNew.remove(); // Remove the row
+            updateTaskCountEdit(); // Update the task count when removing a task
+        });
+        $trNew.append($removeLink);
+
+        $tableBody.append($trNew);
+
+        // Reset input fields
+        resetInputFieldsEdit($trNew);
+
+        // Update the task count when adding a new task
+        updateTaskCountEdit();
+        updateTaskIndicesEdit();
+    };
+
+    // 2. Remove (Event delegation)
+    function removal(e) {
+
+       
+
+        e.preventDefault();
+        $(e.target).closest('tr').remove(); // Find the closest <tr> and remove it
+        updateTaskCountEdit(); // Update the task count when removing a task
+        updateTaskIndicesEdit();
+        // updateRemoveTask();
+    };
+
+    
+    function updateTaskIndicesEdit() {
+        var $tableBody = $("#dataTableEdit");
+        var $taskRows = $tableBody.find('tr');
+
+        $taskRows.each(function (index, row) {
+            var $row = $(row);
+            var $taskTitleInput = $row.find('input[name^="TaskViewModels"]');
+            // var $taskTitleInput = $row.find('input[name^="TaskViewModels"]').filter('[type="text"]');
+            var $taskDescriptionInput = $row.find('textarea[name^="TaskViewModels"]');
+
+            // Update the name attributes with the correct index
+            var newIndex = index - 1; // Adjust the index
+            $taskTitleInput.attr('name', 'TaskViewModels[' + newIndex + '].TaskTitle');
+            $taskDescriptionInput.attr('name', 'TaskViewModels[' + newIndex + '].TaskDescription');
+        });
+
+        taskCounterEdit = $taskRows.length - 1; // Update the task counter
+    }
+
+    
+</script>
+
+@* DELETE LATER *@
+
+@*<dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Name)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Name)
+    </dd>*@
+
+@*<dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.Archived)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.Archived)
+    </dd>
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.ArchivedDate)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.ArchivedDate)
+    </dd>
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.ImageFileName)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.ImageFileName)
+    </dd>
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.ImageFileData)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.ImageFileData)
+    </dd>
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.ImageContentType)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.ImageContentType)
+    </dd>
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.Company)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.Company.Id)
+    </dd>*@
+    
+
+   

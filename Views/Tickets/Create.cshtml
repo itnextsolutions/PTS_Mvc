@@ -1,0 +1,198 @@
+﻿@model MVC_BugTracker.Models.ViewModels.TicketTaskViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+@* <h1>Create Ticket </h1>
+
+<hr /> *@
+
+<div class="card card-primary" style="border:none!important;box-shadow:none!important;padding-bottom:0px!important">
+    @* <div class="card-header">Create New Ticket</div> *@
+    <div class="card-body">
+        <form asp-action="Create">
+            <div class="row">
+                <div class="col-md-7">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />
+
+                    @if (Model.tic.ProjectId > 0)
+                    {
+                        <input type="hidden" asp-for="tic.ProjectId" />
+                    }
+                    else
+                    {
+                        <div class="form-group">
+                            <label asp-for="tic.ProjectId" class="control-label"></label>
+                            <select asp-for="tic.ProjectId" class="form-control" asp-items="ViewBag.ProjectId">
+                                <option>Select a Client</option>
+                            </select>
+                            <span asp-validation-for="tic.ProjectId" class="text-danger"></span>
+                        </div>
+                    }
+
+                    <div class="form-group">
+                        <label asp-for="tic.Title" class="control-label"></label>
+                        <input asp-for="tic.Title"
+                               class="form-control"
+                               placeholder="Ticket Title"
+                               required />
+                        <span asp-validation-for="tic.Title" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label asp-for="tic.Description" class="control-label"></label>
+                        <textarea asp-for="tic.Description"
+                                  class="form-control"
+                                  style="height:125px"
+                                  placeholder="Ticket Description"
+                                  required></textarea>
+                        <span asp-validation-for="tic.Description" class="text-danger"></span>
+                    </div>
+
+                    @* <div class="card card-primary collapsed-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Tasks</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+
+                            <!-- /.card-tools -->
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                          
+
+
+                            <table class="table table-bordered" style="width: 90% !important" id="dataTable">
+                                <tr>
+                                    <th>Task Title</th>
+                                    <th>Task Description</th>
+                                    <th></th>
+                                </tr>
+                            </table>
+                            <button type="button" onclick="addNew()" >Add Task</button>
+
+
+                            <br />
+
+                        </div>
+                    </div> *@
+
+                </div>
+
+                <div class="col">
+
+                    <div class="form-group">
+                        <label asp-for="tic.TicketTypeId" class="control-label"></label>
+                        <select asp-for="tic.TicketTypeId"
+                                class="form-control"
+                                asp-items="ViewBag.TicketTypeId"
+                                required>
+                            <option>Select a Ticket Type</option>
+                        </select>
+                        <span asp-validation-for="tic.TicketTypeId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="tic.TicketPriorityId" class="control-label"></label>
+                        <select asp-for="tic.TicketPriorityId"
+                                class="form-control"
+                                asp-items="ViewBag.TicketPriorityId"
+                                required>
+                            <option>Select a Ticket Priority</option>
+                        </select>
+                        <span asp-validation-for="tic.TicketPriorityId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="tic.StartDate" class="control-label"></label>
+                        <input asp-for="tic.StartDate" class="form-control" required />
+                        <span asp-validation-for="tic.StartDate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="tic.DueDate" class="control-label"></label>
+                        <input asp-for="tic.DueDate" class="form-control" required />
+                        <span asp-validation-for="tic.DueDate" class="text-danger"></span>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+
+            <div class="row">
+                <div class="col">
+                    <div class="card card-primary collapsed-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Add Tasks</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+
+                            <!-- /.card-tools -->
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+
+
+
+                            <table class="table table-bordered" style="width: 90% !important" id="dataTable">
+                                <tr>
+                                    <th>Task Title</th>
+                                    <th>Task Description</th>
+                                    <th></th>
+                                </tr>
+                            </table>
+                            <button type="button" onclick="addNew()">Add Task</button>
+
+
+                            <br />
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col">
+                    <hr />
+                    <div class="form-group float-right">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                        <a class="btn btn-secondary" href="@ViewBag.returnUrl">Cancel</a>
+                    </div>
+                </div>
+            </div>
+          
+        </form>
+
+    </div>
+</div>
+
+
+
+
+<div>
+   
+</div>
+
+
+
+
+@* <script  src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> *@
+@* @Html.Raw(TempData["Success"]) *@
+
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery -->
+}

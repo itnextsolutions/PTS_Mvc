@@ -1,0 +1,260 @@
+﻿@*@model IEnumerable<MVC_BugTracker.Models.ViewModels.ManageUserRolesViewModel>
+
+<div class="row">
+
+    @foreach (var btuser in Model)
+    {
+        <div class="card col-6" style="margin: 2px">
+            <div class="card-body">
+                <h2 class="m-t-0 h3"><b>Assign Roles to @btuser.BTUser.FullName</b></h2>
+                <p class="text-muted font-13 m-b-30">
+                    This form displays the current roles assigned to the user: @btuser.BTUser.FullName. Use the dropdown to select the roles that this user should be assigned. Once roles are selected, click "Assign Roles" to submit the form.
+                </p>
+                <hr/>
+                <form asp-controller="UserRoles" asp-action="ManageUserRoles" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="@btuser.BTUser.Id">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label asp-for="@btuser.Roles" class="control-label">Roles for @btuser.BTUser.FullName</label>
+                            <select asp-for="@btuser.SelectedRoles" class="form-control" asp-items="@btuser.Roles" multiple="multiple"></select>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="col-12">
+                        <div class="form-group pull-right">
+                            <input type="submit" value="Assign Roles" class="btn btn-info"/>
+                            <a class="btn btn-info" asp-controller="Home" asp-action="Dashboard">Cancel</a>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    }
+
+</div>*@
+@model IEnumerable<MVC_BugTracker.Models.ViewModels.ManageUserRolesViewModel>
+
+@{
+    ViewData["Title"] = "Manage User Roles";
+}
+
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Success</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Roles have been successfully added.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col">
+       @* <!-- Search Bar -->
+        <div class="form-group">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search by user name...">
+        </div>*@
+
+        <!-- All Members DATA-TABLE -->
+
+        <table id="ManageUserRoles" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Roles</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var btusers in Model)
+                {
+                    <tr>
+                        <td>@btusers.BTUser.FullName</td>
+                        <td>
+                            <form asp-controller="UserRoles" asp-action="ManageUserRoles" method="post" onsubmit="showSuccessModal();">    
+                                <input type="hidden" asp-for="@btusers.BTUser.Id">
+                                <select asp-for="@btusers.SelectedRoles" class="form-control" asp-items="@btusers.Roles" multiple="multiple"></select>
+                                @* <button type="submit" class="btn btn-primary btn-sm">Assign Roles</button > *@
+                            </form>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#userDetailsModal-@btusers.BTUser.Id">Details</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Add
+                                </button>
+                                <div class="dropdown-menu">
+                                    @foreach (var role in btusers.Roles)
+                                    {
+                                        <a class="dropdown-item" href="#" onclick="assignRole('@btusers.BTUser.Id', '@role.Value','@btusers.BTUser.FullName')">@role.Text</a>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-danger btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Remove Role
+                                </button>
+                                <div class="dropdown-menu">
+                                    @foreach (var role in btusers.Roles)
+                                    {
+                                        <a class="dropdown-item" href="#" onclick="removeRole('@btusers.BTUser.Id', '@role.Value','@btusers.BTUser.FullName')">@role.Text</a>
+                                    }
+                                </div>
+                            </div>
+
+                       </td>
+                   
+
+                    <div class="modal fade" id="userDetailsModal-@btusers.BTUser.Id" tabindex="-1" role="dialog" aria-labelledby="userDetailsModalLabel">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                    <div class="modal-header" style="background-color: #007bff!important;">
+                                    <h5 class="modal-title" id="userDetailsModalLabel">User Details</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                        <p><strong>Name:</strong> @btusers.BTUser.FullName</p>
+                                        <p><strong>Email:</strong> @btusers.BTUser.Email</p>
+                                        <p><strong>Shift:</strong> @btusers.BTUser.shift</p>
+                                       
+                                    <!-- Add more user details here as needed -->
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <!-- END TABLE -->
+    </div>
+</div>
+
+
+                                          @* <<<< SCRIPTS >>>> *@
+
+
+@* <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.6/dist/sweetalert2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.6/dist/sweetalert2.min.js"></script> *@
+
+@section Scripts {
+    <script>
+            $(document).ready(function () {
+            $('#ManageUserRoles').DataTable({
+                    "paging": true,
+                    "lengthChange": false,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": true,
+                });
+
+
+
+
+            });
+
+    
+
+        function assignRole(userId, roleName, FullName) {
+            $.ajax({
+                url: '/UserRoles/AssignRole',
+                type: 'POST',
+                data: {
+                    userId: userId,
+                    roleName: roleName,
+                    FullName: FullName
+                },
+                success: function (data) {
+                    // if (data.success) {
+                    //     Swal.fire({
+                    //         title: 'Success',
+                    //         text: `Role assigned successfully to '${FullName}' as a '${roleName}'`,
+                    //         icon: 'success',
+                    //         confirmButtonText: 'Close'
+                    //     }).then(() => {
+                    //         location.reload();
+                    //     });
+                    // } else {
+                    //     Swal.fire({
+                    //         title: 'Error',
+                    //         text: `Error assigning role: ${data.message}`,
+                    //         icon: 'error',
+                    //         confirmButtonText: 'Close'
+                    //     });
+                    // }
+                        location.reload();
+                },
+                error: function (error) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'An error occurred while processing the request.',
+                        icon: 'error',
+                        confirmButtonText: 'Close'
+                    });
+                }
+            });
+        }
+
+        function removeRole(userId, roleName, FullName) {
+            $.ajax({
+                url: '/UserRoles/RemoveRole',
+                type: 'POST',
+                data: {
+                    userId: userId,
+                    roleName: roleName,
+                    FullName: FullName
+                },
+                success: function (data) {
+                    // if (data.success) {
+                    //     Swal.fire({
+                    //         title: 'Remove',
+                    //         text: `'${roleName}' Role has been successfully removed from '${FullName}'`,
+                    //         icon: 'success',
+                    //         confirmButtonText: 'Close'
+                    //     }).then(() => {
+                    //         location.reload();
+                    //     });
+                    // } else {
+                    //     Swal.fire({
+                    //         title: 'Error',
+                    //         text: `Error removing role: ${data.message}`,
+                    //         icon: 'error',
+                    //         confirmButtonText: 'Close'
+                    //     });
+                    // }
+                    location.reload();
+                },
+                error: function (error) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'An error occurred while processing the request.',
+                        icon: 'error',
+                        confirmButtonText: 'Close'
+                    });
+                }
+            });
+        }
+    </script>
+
+  
+}

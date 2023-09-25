@@ -1,0 +1,168 @@
+﻿@model MVC_BugTracker.Models.ViewModels.InviteViewModel
+
+<h1>Company Invite: Team Member</h1>
+
+<div>
+    <div class="card">
+        
+            
+            <form asp-action="Create">
+            @* <div asp-validation-summary="All" class="text-danger"></div> *@
+                <!-- Form Elements -->
+                <div class="card-body row">
+
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label for="Email">E-Mail</label>
+                        <input type="email" asp-for="Email" class="form-control" placeholder="Enter  E-mail Id" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+
+                        </div>
+                        <div class="form-group">
+                        <label for="FirstName">First Name</label>
+                        <input type="text" asp-for="FirstName" class="form-control" placeholder="Enter First Name"/>
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                        <div class="form-group">
+                            <label for="inputName">Last Name</label>
+                        <input type="text" asp-for="LastName" class="form-control" placeholder="Enter Last Name" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                    <!-- PASSWORD -->
+                    <div class="form-group mb-3">
+                        <label asp-for="Password" class="control-label"></label>
+                        <input type="password" class="form-control" placeholder="Password" asp-for="Password" required>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                       @*  <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div> *@
+                    </div>
+
+                    <!-- CONFIRM PASSWORD -->
+                    <div class="form-group mb-3">
+                        <label asp-for="ConfirmPassword" class="control-label"></label>
+                        <input type="password" class="form-control" placeholder="Retype password" asp-for="ConfirmPassword">
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                       @*  <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div> *@
+                    </div>
+
+                    </div>
+
+                    <div class="col">
+                        <div class="form-group">
+                            <label asp-for="ProjectId"></label>
+                            <select class="form-control" asp-for="ProjectId" asp-items="Model.ProjectsList">
+                                <option value="">Select Client</option>
+                            </select>
+                        <span asp-validation-for="ProjectId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputMessage">Message</label>
+                            <textarea asp-for="Message" class="form-control" rows="4" placeholder="Enter Message"></textarea>
+                        <span asp-validation-for="Message" class="text-danger"></span>
+                        </div>
+                    @*     <div class="row"> *@
+                    <div class="form-group col-sm-6">
+                            <label asp-for="ShiftId"></label>
+                            <select class="form-control" asp-for="ShiftId" asp-items="Model.ShiftList">
+                                <option value="">Select Shift</option>
+                            </select>
+                            <span asp-validation-for="ShiftId" class="text-danger"></span>
+                        </div>
+                            @* <div class="col">
+                                <div class="form-group">
+                                    <label asp-for="StartDate" class="control-label"></label>
+                                    <input asp-for="StartDate" class="form-control" />
+                                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label asp-for="DueDate" class="control-label"></label>
+                                    <input asp-for="DueDate" class="form-control" />
+                                    <span asp-validation-for="DueDate" class="text-danger"></span>
+                                </div>
+                            </div> *@
+                        @* </div> *@
+                        <div class="form-group float-right">
+                            <input type="submit" value="Send User" class="btn btn-success" />
+                            <a class="btn btn-secondary" asp-controller="Home" asp-action="Dashboard">Cancel</a>
+                        </div>
+
+
+                    </div>
+                   
+                </div>
+                <!-- ./Form Elements -->
+
+            </form>
+        
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        // <partial name="_ValidationScriptsPartial" />
+    }
+        }
+
+
+
+
+
+@* DELETE LATER *@
+
+@*<div class="row row-xs align-items-center mg-b-20">
+    <div class="col-md-4">
+        <label class="mg-b-0">Email</label>
+    </div>
+    <div class="col-md-8 mg-t-5 mg-md-t-0">
+        <input type="email" asp-for="Email" class="form-control" placeholder="Enter email">
+    </div>
+</div>
+<div class="row row-xs align-items-center mg-b-20">
+    <div class="col-md-4">
+        <label class="mg-b-0">Firstname</label>
+    </div>
+    <div class="col-md-8 mg-t-5 mg-md-t-0">
+        <input type="text" asp-for="FirstName" class="form-control" placeholder="Enter first name">
+    </div>
+</div>
+<div class="row row-xs align-items-center mg-b-20">
+    <div class="col-md-4">
+        <label class="mg-b-0">Lastname</label>
+    </div>
+    <div class="col-md-8 mg-t-5 mg-md-t-0">
+        <input type="text" asp-for="FirstName" class="form-control" placeholder="Enter last name">
+    </div>
+</div>
+<div class="row row-xs align-items-center mg-b-20">
+    <div class="col-md-4">
+        <label class="mg-b-0">Select Project</label>
+    </div>
+    <div class="col-md-8 mg-t-5 mg-md-t-0">
+        <select class="form-control" asp-for="ProjectId" asp-items="Model.ProjectsList">
+            <option value="">Select Project</option>
+        </select>
+    </div>
+</div>
+<div class="row row-xs align-items-center mg-b-20">
+    <div class="col-md-4">
+        <label class="mg-b-0">Message</label>
+    </div>
+    <div class="col-md-8 mg-t-5 mg-md-t-0">
+        <textarea asp-for="Message" multiple="multiple"></textarea>
+    </div>
+</div>
+<div class="form-group row justify-content-end mb-0">
+    <div class="col-md-8 pl-md-2">
+        <input type="submit" class="btn ripple btn-primary pd-x-30 mg-r-5" value="Send Invite" />
+        <button class="btn ripple btn-secondary pd-x-30">Cancel</button>
+    </div>
+</div>*@

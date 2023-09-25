@@ -1,0 +1,55 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+
+
+
+@model MVC_BugTracker.Models.RotationShift
+
+<h2>Create Shift</h2>
+
+<form asp-action="Create">
+   
+
+    <div class="form-group">
+        <label asp-for="Shift_type"></label>
+        <input asp-for="Shift_type" class="form-control"/>
+        <span asp-validation-for="Shift_type" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="StartTime"></label>
+        @* <input asp-for="StartTime" class="form-control" /> *@
+        <input type="text" asp-for="StartTime" name="StartTime" class="form-control timepicker" />
+
+        <span asp-validation-for="StartTime" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="EndTime"></label>
+        <input type="text" asp-for="EndTime" name="EndTime" class="form-control timepicker" />
+        <span asp-validation-for="EndTime" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+<a asp-action="AllShift">Back to List</a>
+
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.11.15/jquery.timepicker.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.11.15/jquery.timepicker.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.timepicker').timepicker({
+                timeFormat: 'H:i', // 24-hour format
+                step: 30,          // 15-minute intervals
+                disableTextInput: false // Prevent manual input
+            });
+        });
+    </script>
+}

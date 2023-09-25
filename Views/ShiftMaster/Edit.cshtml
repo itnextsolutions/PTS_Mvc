@@ -1,0 +1,25 @@
+﻿@model MVC_BugTracker.Models.RotationShift
+
+
+<form asp-action="Edit">
+    <div class="form-group">
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="CompanyId" type="hidden"/>
+        <label asp-for="Shift_type"></label>
+        <input asp-for="Shift_type" class="form-control" required/>
+        <span asp-validation-for="Shift_type" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="StartTime"></label>
+        <input asp-for="StartTime" class="form-control" required/>
+        <span asp-validation-for="StartTime" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="EndTime"></label>
+        <input asp-for="EndTime" class="form-control" required/>
+        <span asp-validation-for="EndTime" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+
+<a asp-action="AllShift">Back to List</a>
