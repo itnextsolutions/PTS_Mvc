@@ -17,7 +17,7 @@ namespace MVC_BugTracker.Controllers
         public CompaniesController(ApplicationDbContext context)
         {
             _context = context;
-        }
+        }   
 
         // GET: Companies
         public async Task<IActionResult> Index()
