@@ -23,3 +23,44 @@
 </form>
 
 <a asp-action="AllShift">Back to List</a>
+
+<script>
+    $(document).ready(function () {
+        $('form').submit(function (event) {
+            event.preventDefault();
+
+            var form = $(this);
+
+            $.ajax({
+                url: form.attr('action'),
+                type: form.attr('method'),
+                data: form.serialize(),
+                success: function (result) {
+                    debugger
+                    if (result.success) {
+                        // Success
+                        Swal.fire({
+                            title: 'Success',
+                            text: result.message,
+                            icon: 'success',
+                            // timer: 3000,
+                        }).then(function () {
+                            // Redirect or perform other actions after success
+                            window.location.href = result.url;
+                        });
+                    } else {
+                        // Error
+                        Swal.fire({
+                            title: 'Error',
+                            text: result.errors,
+                            icon: 'error',
+                        });
+                    }
+                },
+                error: function () {
+                    // Handle AJAX error here
+                }
+            });
+        });
+    });
+</script>

@@ -9,7 +9,7 @@ namespace MVC_BugTracker.Models.ViewModels
 {
     public class InviteViewModel
     {
-        public BTUser user { get; set; } = new();
+        //public BTUser user { get; set; } = new();
 
         [Display(Name = "Company")]
         public Company Company { get; set; }
@@ -29,7 +29,7 @@ namespace MVC_BugTracker.Models.ViewModels
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "The  ClientId is required.")]
         [Display(Name = "Client")]
         public int ProjectId { get; set; }
 

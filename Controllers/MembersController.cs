@@ -74,9 +74,17 @@ namespace MVC_BugTracker.Controllers
                 var shiftList=await _context.RotationShift.Where(x=>x.CompanyId==companyId).ToListAsync();
                
                 foreach (var user in users)
+                {
+                    if(user.shift!=null)
                     {
-                    var company = await _context.RotationShift.FindAsync(Convert.ToInt32(user.shift));
-                    user.shift = company.Shift_type;
+                        var userShift = await _context.RotationShift.FindAsync(Convert.ToInt32(user.shift));
+                        if (userShift.Shift_type != null)
+                        {
+
+                            user.shift = userShift.Shift_type;
+                        }
+                    }
+                   
                 }
                
             }
@@ -100,10 +108,13 @@ namespace MVC_BugTracker.Controllers
             .Where(u => u.Id == id)
             .FirstOrDefaultAsync();
 
-     
-            var userShift =  _context.RotationShift.Where(x => x.Id == Convert.ToInt32(user.shift)).FirstOrDefault();
+            if (user.shift!=null)
+            {
+                var userShift = _context.RotationShift.Where(x => x.Id == Convert.ToInt32(user.shift)).FirstOrDefault();
 
-            user.shift=userShift.ShiftInterval;
+                user.shift = userShift.ShiftInterval;
+            }
+            
             //if (id == null)
             //{
             //    return NotFound();
@@ -165,40 +176,40 @@ namespace MVC_BugTracker.Controllers
 
 
 
-        // GET: Members/Create
-        public async Task<IActionResult> Create(int? projId)
-        {
+        //// GET: Members/Create
+        //public async Task<IActionResult> Create(int? projId)
+        //{
 
-            // Get Current User
-            BTUser btUser = await _userManager.GetUserAsync(User);
+        //    // Get Current User
+        //    BTUser btUser = await _userManager.GetUserAsync(User);
 
-            // Get Current User Company Id
-            int companyId = User.Identity.GetCompanyId().Value;
+        //    // Get Current User Company Id
+        //    int companyId = User.Identity.GetCompanyId().Value;
 
-            Ticket ticket = new();
+        //    Ticket ticket = new();
 
-            if (projId == null)
-            {
-                if (User.IsInRole("Admin"))
-                {
-                    ViewData["ProjectId"] = new SelectList(await _projectService.GetAllProjectsByCompany(companyId), "Id", "Name");
-                }
-                else
-                {
-                    ViewData["ProjectId"] = new SelectList(await _projectService.ListUserProjectsAsync(btUser.Id), "Id", "Name");
-                }
-            }
-            else
-            {
-                ticket.ProjectId = (int)projId;
-            }
+        //    if (projId == null)
+        //    {
+        //        if (User.IsInRole("Admin"))
+        //        {
+        //            ViewData["ProjectId"] = new SelectList(await _projectService.GetAllProjectsByCompany(companyId), "Id", "Name");
+        //        }
+        //        else
+        //        {
+        //            ViewData["ProjectId"] = new SelectList(await _projectService.ListUserProjectsAsync(btUser.Id), "Id", "Name");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        ticket.ProjectId = (int)projId;
+        //    }
 
-            ViewBag.returnUrl = Request.Headers["Referer"].ToString();
-            ViewData["TicketPriorityId"] = new SelectList(_context.Set<TicketPriority>(), "Id", "Name");
-            ViewData["TicketTypeId"] = new SelectList(_context.Set<TicketType>(), "Id", "Name");
+        //    ViewBag.returnUrl = Request.Headers["Referer"].ToString();
+        //    ViewData["TicketPriorityId"] = new SelectList(_context.Set<TicketPriority>(), "Id", "Name");
+        //    ViewData["TicketTypeId"] = new SelectList(_context.Set<TicketType>(), "Id", "Name");
 
-            return View(ticket);
-        }
+        //    return View(ticket);
+        //}
 
 
         public async Task <IActionResult> ChangePassword(string id)
@@ -298,7 +309,9 @@ namespace MVC_BugTracker.Controllers
                     await _context.SaveChangesAsync();
 
                     // Redirect to the referring page or a success page.
-                    return Redirect(returnUrl);
+                    //return Redirect(returnUrl);
+
+                    return Json(new { success = true, message = "Password Updated successfully!", url = returnUrl });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -307,7 +320,10 @@ namespace MVC_BugTracker.Controllers
                     ModelState.AddModelError("", "Concurrency conflict occurred.");
                 }
             }
-
+            var errors = ModelState.Values.SelectMany(v => v.Errors)
+                      .Select(e => e.ErrorMessage)
+                      .ToList();
+            return Json(new { success = false, errors = errors });
             return View();
         }
 
@@ -370,24 +386,7 @@ namespace MVC_BugTracker.Controllers
             ViewBag.returnUrl = Request.Headers["Referer"].ToString();
 
 
-            //ViewData["Id"] = new SelectList(_context.Users, user.Id);
-            //ViewData["FirstName"] =  user.FirstName;
-            //ViewData["LastName"] = new SelectList(_context.Users, user.LastName);
-            //ViewData["Username"] = new SelectList(_context.Users, user.UserName);
-            //ViewData["Email"] = new SelectList(_context.Users, user.Email);
-            //ViewData["PhoneNumber"] = new SelectList(_context.Users, user.PhoneNumber);
-
-
-            // BTUser
-            //BTUser users = await _userManager.GetUserAsync(User);
-
-            //// UserId
-            //string Id = _userManager.GetUserId(User);
-
-            //int companyId = User.Identity.GetCompanyId().Value;
-            //List<BTUser> members = await _infoService.GetAllMembersAsync(companyId, id);
-
-            //return View(user);
+           
             return PartialView("Edit", model);
         }
 
@@ -398,7 +397,7 @@ namespace MVC_BugTracker.Controllers
         {
 
 
-            {
+            
                 if (id != inviteUser.Id)
                 {
                     return NotFound();
@@ -483,11 +482,15 @@ namespace MVC_BugTracker.Controllers
                         // For example, you can show an error message or return a specific view.
                         ModelState.AddModelError("", "Concurrency conflict occurred.");
                     }
+                    return Json(new { success = true, message = "Members Updated successfully!", url = returnUrl });
                 }
 
-                // If ModelState is not valid, return to the edit view with validation errors.
-                return View(inviteUser);
-            }
+            // If ModelState is not valid, return to the edit view with validation errors.
+            //return View(inviteUser);
+            var errors = ModelState.Values.SelectMany(v => v.Errors)
+                      .Select(e => e.ErrorMessage)
+                      .ToList();
+            return Json(new { success = false, errors = errors });
         }
 
 

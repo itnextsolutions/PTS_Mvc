@@ -6,7 +6,9 @@
 
 @{
     ViewData["Title"] = "Create New Project";
+    Layout = "~/Views/Shared/sweetAlertPartial.cshtml";
 }
+
 
 @* <h1>New Client</h1> *@
 
@@ -20,7 +22,7 @@
             <div class="row">
                 <div class="col-md-7">
 
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div asp-validation-summary="All" class="text-danger"></div>
                     <div class="form-group">
                         <label asp-for="Name" class="control-label"></label>
                         <input asp-for="Name" class="form-control" placeholder="Client Name" required />
@@ -59,7 +61,7 @@
 
 
                     <div class="form-group float-right">
-                        <input type="submit" value="Create" class="btn btn-primary" />
+                        <input type="submit" value="Create" onclick="handleFormSubmission()" class="btn btn-primary" />
                         <a class="btn btn-secondary" asp-action="AllProjects">Cancel</a>
                     </div>
                 </div>
@@ -74,11 +76,105 @@
 @*<div>
     <a asp-action="AllProjects">Back to List</a>
 </div>*@
+@* <script>
+    $(document).ready(function () {
+        $('form').submit(function (event) {
+            event.preventDefault();
 
+            var form = $(this);
+
+            $.ajax({
+                url: form.attr('action'),
+                type: form.attr('method'),
+                data: form.serialize(),
+                success: function (result) {
+                    debugger
+                    if (result.success) {
+                        // Success
+                        Swal.fire({
+                            title: 'Success',
+                            text: result.message,
+                            icon: 'success',
+                            // timer: 3000,
+                            confirmButtonText: 'done'
+                        }).then(function () {
+                            // Redirect or perform other actions after success
+                            window.location.href = result.url;
+                        });
+                    } else {
+                        // Error
+                        Swal.fire({
+                            title: 'Error',
+                            text: result.errors,
+                            icon: 'error',
+                        });
+                    }
+                },
+                error: function () {
+                    // Handle AJAX error here
+                }
+            });
+        });
+    });
+</script>  *@
+
+
+@* <script>
+    $(document).ready(function () {
+        $('form').submit(function (event) {
+            event.preventDefault();
+
+            var form = $(this);
+
+            if (form[0].checkValidity()) {
+                $.ajax({
+                    url: form.attr('action'),
+                    type: form.attr('method'),
+                    data: form.serialize(),
+                    success: function (result) {
+                        debugger
+                        if (result.success) {
+                            // Success
+                            Swal.fire({
+                                title: 'Success',
+                                text: result.message,
+                                icon: 'success',
+                                timer: 3000,
+                            }).then(function () {
+                                // Redirect or perform other actions after success
+                                window.location.href = '/Projects/AllProjects';
+                            });
+                        } else {
+                            // Error
+                            Swal.fire({
+                                title: 'Error',
+                                text: result.message,
+                                icon: 'error',
+                            });
+                        }
+                    },
+                    error: function () {
+                        // Handle AJAX error here
+                    }
+                });
+            } else {
+                // Display a SweetAlert error message for validation errors
+                Swal.fire({
+                    title: 'Validation Error',
+                    text: 'Please fill in all required fields correctly.',
+                    icon: 'error',
+                });
+            }
+        });
+    });
+</script> *@
+@* 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+   
 }
 
 

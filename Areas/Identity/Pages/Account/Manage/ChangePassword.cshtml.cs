@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using MVC_BugTracker.Models;
+using MVC_BugTracker.Models.ViewModels;
+
 namespace MVC_BugTracker.Areas.Identity.Pages.Account.Manage
 {
     public class ChangePasswordModel : PageModel
@@ -90,7 +92,12 @@ namespace MVC_BugTracker.Areas.Identity.Pages.Account.Manage
                 }
                 return Page();
             }
-
+            
+            byte[] encData_byte = new byte[Input.NewPassword.Length];
+            encData_byte = System.Text.Encoding.UTF8.GetBytes(Input.NewPassword);
+            string encodedData = Convert.ToBase64String(encData_byte);
+            user.Password= encodedData;
+            await _userManager.UpdateAsync(user);
             await _signInManager.RefreshSignInAsync(user);
             _logger.LogInformation("User changed their password successfully.");
             StatusMessage = "Your password has been changed.";

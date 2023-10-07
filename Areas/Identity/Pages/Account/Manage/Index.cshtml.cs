@@ -43,15 +43,19 @@ namespace MVC_BugTracker.Areas.Identity.Pages.Account.Manage
         public class InputModel
         {
             [Display(Name = "First Name")]
+            [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
             public string FirstName { get; set; }
 
             [Display(Name = "Last Name")]
+            [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
             public string LastName { get; set; }
 
             [Phone]
+            [Required]
             [Display(Name = "Phone number")]
+            [RegularExpression("^([0-9]{10})$", ErrorMessage = "Invalid Phone Number.")]
             public string PhoneNumber { get; set; }
 
             [Display(Name = "Profile Image")]

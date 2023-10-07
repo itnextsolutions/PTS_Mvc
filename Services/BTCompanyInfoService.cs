@@ -146,14 +146,25 @@ namespace MVC_BugTracker.Services
             return company;
         }
 
-        //public async Task<List<BTUser>> GetMembersInRoleAsync(string roleName, int companyId, string v)
-        //{
-        //    List<BTUser> users = (await _userManager.GetUsersInRoleAsync(roleName)).ToList();
-        //    List<BTUser> roleUsers1 = users.Where(u => u.CompanyId == companyId).ToList();
-        //    List<BTUser> roleUsers = users.Where(u => u.shift == v).ToList();
+        public async Task<List<BTUser>> GetMembersInRoleAsync(string roleName, int companyId, List<RotationShift> presentShift)
+        {
+            List<BTUser> users = (await _userManager.GetUsersInRoleAsync(roleName)).ToList();
+            List<BTUser> roleUsersList = users.Where(u => u.CompanyId == companyId).ToList();
+          
 
-        //    return roleUsers;
-        //}
+
+
+            List<BTUser> roleUsers = new();
+            roleUsers = roleUsersList.Where(ot => presentShift.Any(tt => (tt.Id).ToString() == ot.shift)).ToList();
+            //foreach (var shiftU in presentShift)
+            //{
+            //    //List<BTUser> User = new();
+            //    var User = roleUsersList.Single(u=>u.shift==shiftU.Id.ToString());
+            //    roleUsers.Add(User);
+            //}
+
+            return roleUsers;
+        }
 
         public async Task<List<BTUser>> GetMembersInRoleAsyncAdmin(string roleName, int companyId)
         {

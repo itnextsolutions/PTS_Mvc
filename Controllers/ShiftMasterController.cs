@@ -53,9 +53,18 @@ namespace MVC_BugTracker.Controllers
                 shift.CompanyId = companyid;
                 _context.Add(shift);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(AllShift));
+                //return RedirectToAction(nameof(AllShift));
+               var returnUrl= Request.Headers["Referer"].ToString();
+
+
+                return Json(new { success = true, message = "Shift saved successfully!", url = returnUrl });
+
             }
-            return View(shift);
+            //return View(shift);
+            var errors = ModelState.Values.SelectMany(v => v.Errors)
+                      .Select(e => e.ErrorMessage)
+                      .ToList();
+            return Json(new { success = false, errors = errors });
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -101,7 +110,12 @@ namespace MVC_BugTracker.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(AllShift));
+                //return RedirectToAction(nameof(AllShift));
+                var returnUrl = Request.Headers["Referer"].ToString();
+
+
+                return Json(new { success = true, message = "Shift updated successfully!", url = returnUrl });
+
             }
             return View(shift);
         }

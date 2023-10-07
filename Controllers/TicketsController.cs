@@ -373,7 +373,8 @@ namespace MVC_BugTracker.Controllers
                 //TempData["Success"] = "<script>alert('User created successfully');</script>";
 
                 //return RedirectToAction("Details", "Tickets", new { id = ticket.Id });
-                return Redirect(returnUrl);
+                //return Redirect(returnUrl);
+                return Json(new { success = true, message = "Ticket saved successfully!", url = returnUrl });
                 //return View();
             }
 
@@ -384,7 +385,11 @@ namespace MVC_BugTracker.Controllers
             //ViewData["TicketStatusId"] = new SelectList(_context.Set<TicketStatus>(), "Id", "Id", ticket.TicketStatusId);
 
             //return View(ticket);
-            return RedirectToAction("AllTickets");
+            //return RedirectToAction("AllTickets");
+            var errors = ModelState.Values.SelectMany(v => v.Errors)
+                               .Select(e => e.ErrorMessage)
+                               .ToList();
+            return Json(new { success = false, errors = errors });
         }
 
         // Assign Ticket
@@ -907,9 +912,14 @@ namespace MVC_BugTracker.Controllers
                 await _context.SaveChangesAsync();
                 // Redirect to Referrer
                 //return RedirectToAction("AllTickets");
-                return Redirect(returnUrl);
+                //return Redirect(returnUrl);
+                return Json(new { success = true, message = "Ticket Updated successfully!", url = returnUrl });
+
+
+
+              
             }
-            
+
             // Refactor to match restrictions in the GET method for select list
             //ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Id", ticket.ProjectId);
             //ViewData["TicketPriorityId"] = new SelectList(_context.Set<TicketPriority>(), "Id", "Id", ticket.TicketPriorityId);
@@ -917,8 +927,12 @@ namespace MVC_BugTracker.Controllers
             //ViewData["TicketTypeId"] = new SelectList(_context.Set<TicketType>(), "Id", "Id", ticket.TicketTypeId);
             //ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "Id", ticket.DeveloperUserId);
             //ViewData["OwnerUserId"] = new SelectList(_context.Users, "Id", "Id", ticket.OwnerUserId);
-            
-            return View(viewmodel);
+
+            //return View(viewmodel);
+            var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                    .Select(e => e.ErrorMessage)
+                                    .ToList();
+            return Json(new { success = false, errors = errors });
         }
 
         // GET: Tickets/Delete/5

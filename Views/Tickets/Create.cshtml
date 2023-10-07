@@ -1,7 +1,7 @@
 ﻿@model MVC_BugTracker.Models.ViewModels.TicketTaskViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create"; 
 }
 
 @* <h1>Create Ticket </h1>
@@ -168,7 +168,7 @@
                 <div class="col">
                     <hr />
                     <div class="form-group float-right">
-                        <input type="submit" value="Create" class="btn btn-primary" />
+                        <input type="submit" value="Create" onclick="handleFormSubmission()" class="btn btn-primary" />
                         <a class="btn btn-secondary" href="@ViewBag.returnUrl">Cancel</a>
                     </div>
                 </div>
@@ -192,7 +192,46 @@
 @* <script  src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> *@
 @* @Html.Raw(TempData["Success"]) *@
 
+<script>
+    // $(document).ready(function () {
+        $('form').submit(function (event) {
+            event.preventDefault();
 
+            var form = $(this);
+
+            $.ajax({
+                url: form.attr('action'),
+                type: form.attr('method'),
+                data: form.serialize(),
+                success: function (result) {
+                    debugger
+                    if (result.success) {
+                        // Success
+                        Swal.fire({
+                            title: 'Success',
+                            text: result.message,
+                            icon: 'success',
+                            // timer: 3000,
+                        }).then(function () {
+                            // Redirect or perform other actions after success
+                            window.location.href = result.url;
+                        });
+                    } else {
+                        // Error
+                        Swal.fire({
+                            title: 'Error',
+                            text: result.errors,
+                            icon: 'error',
+                        });
+                    }
+                },
+                error: function () {
+                    // Handle AJAX error here
+                }
+            });
+        });
+    // });
+</script>
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery -->
 }

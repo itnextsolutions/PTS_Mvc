@@ -20,7 +20,7 @@ namespace MVC_BugTracker.Services.Interfaces
 
         Task<List<TicketTask>> GetAllTicketTask(int? ticketId);
 
-        //Task<List<BTUser>> GetMembersInRoleAsync(string roleName, int companyId,string v);
+        Task<List<BTUser>> GetMembersInRoleAsync(string roleName, int companyId, List<RotationShift> v);
 
         Task<List<BTUser>> GetMembersInRoleAsyncAdmin(string roleName, int companyId);
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -151,14 +152,19 @@ namespace MVC_BugTracker.Controllers
 
                 _context.Add(project);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Details","Projects", new { id=project.Id });
+                var returnurl = Request.Headers["Referer"].ToString();
+                //return RedirectToAction("Details", "Projects", new { id = project.Id });
+                return Json(new { success = true, message = "Clients saved successfully!", url = returnurl });
             }
 
             //ViewData["CompanyId"] = new SelectList(_context.Company, "Id", "Id", project.CompanyId);
             //ViewData["ProjectPriorityId"] = new SelectList(_context.Set<ProjectPriority>(), "Id", "Id", project.ProjectPriorityId);
 
             //return PartialView("Create");
-            return RedirectToAction("AllProjects");
+            var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                  .Select(e => e.ErrorMessage)
+                                  .ToList();
+            return Json(new { success = false, errors = errors });
         }
 
         // GET: Projects/Edit/5
@@ -222,6 +228,7 @@ namespace MVC_BugTracker.Controllers
 
                     _context.Update(project);
                     await _context.SaveChangesAsync();
+                    return Json(new { success = true, message = "Clients Updated successfully!", url = returnUrl });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -240,11 +247,15 @@ namespace MVC_BugTracker.Controllers
                     throw;
                 }
 
-                return Redirect(returnUrl);
+                //return Redirect(returnUrl);
             }
             
             ViewData["ProjectPriorityId"] = new SelectList(_context.Set<ProjectPriority>(), "Id", "Name", project.ProjectPriorityId);
-            return View(project);
+            //return View(project);
+            var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                 .Select(e => e.ErrorMessage)
+                                 .ToList();
+            return Json(new { success = false, errors = errors });
         }
 
 
@@ -278,25 +289,34 @@ namespace MVC_BugTracker.Controllers
             // ADD to viewmodel
             model.Project = project;
 
-          var Created = DateTimeOffset.Now;
+            //var Created = DateTimeOffset.Now;
 
-            var time = Created.Hour;
+            //var time = Created.Hour;
 
-            var shiftTime = "";
-            if(time>5 && time < 15)
-            {
-                shiftTime = "1st-shift";
-            }
+           
+            List<RotationShift> presentShift = new();
+            var shiftByCompanyId = _context.RotationShift.Where(y => y.CompanyId == companyId).ToList();
+            TimeSpan currentTime = DateTime.Now.TimeOfDay;
+          
 
-            if (time >14  && time < 23)
-            {
-                shiftTime = "2nd-shift";
-            }
+             presentShift = shiftByCompanyId
+           .Where(s => s.StartTime <= s.EndTime
+                       ? currentTime >= s.StartTime && currentTime <= s.EndTime
+                       : currentTime >= s.StartTime || currentTime <= s.EndTime)
+           .ToList();
 
-            if (time > 23 && time < 7)
-            {
-                shiftTime = "3rd-shift";
-            }
+            //if (shiftByCompanyId.Count>0) 
+            //{
+
+            //    foreach (var shift in shiftByCompanyId)
+            //    {
+            //        if ((time >= shift.StartTime.Hours || time < shift.EndTime.Hours) && (time < shift.StartTime.Hours || time < shift.EndTime.Hours))
+            //        {
+            //            presentShift.Add(shift);
+            //        }
+            //    }
+            //}
+
 
             // *** MULTISELECT ***
             // ?? How to return a null multiselect
@@ -306,13 +326,17 @@ namespace MVC_BugTracker.Controllers
 
             try
             {
-                // REFACTOR - concat devs and submitters
 
-                //List<BTUser> developers = await _infoService.GetMembersInRoleAsync(Roles.Developer.ToString(), companyId, shiftTime);
-                //List<BTUser> submitters = await _infoService.GetMembersInRoleAsync(Roles.Submitter.ToString(), companyId, "1st-shift");
-                List<BTUser> developers = await _infoService.GetMembersInRoleAsyncAdmin(Roles.Developer.ToString(), companyId);
-                List<BTUser> submitters = await _infoService.GetMembersInRoleAsyncAdmin(Roles.Submitter.ToString(), companyId);
-                users = developers.Concat(submitters).ToList();
+                if (presentShift.Count > 0)
+                {
+                    List<BTUser> developers = await _infoService.GetMembersInRoleAsync(Roles.Developer.ToString(), companyId, presentShift);
+                    List<BTUser> submitters = await _infoService.GetMembersInRoleAsync(Roles.Submitter.ToString(), companyId, presentShift);
+                    users = developers.Concat(submitters).ToList();
+                }
+             
+                //List<BTUser> developers = await _infoService.GetMembersInRoleAsyncAdmin(Roles.Developer.ToString(), companyId);
+                //List<BTUser> submitters = await _infoService.GetMembersInRoleAsyncAdmin(Roles.Submitter.ToString(), companyId);
+               
             }
             catch (Exception ex)
             {
@@ -355,13 +379,13 @@ namespace MVC_BugTracker.Controllers
             {
                 if (model.SelectedUsers != null)
                 {
-                    List<string> memberIds = (await _projectService.GetMembersWithoutPMAsync(model.Project.Id))
-                                                    .Select(m => m.Id).ToList(); // select a column
+                    //List<string> memberIds = (await _projectService.GetMembersWithoutPMAsync(model.Project.Id))
+                    //                                .Select(m => m.Id).ToList(); // select a column
 
-                    foreach (string id in memberIds)
-                    {
-                        await _projectService.RemoveUserFromProjectAsync(id, model.Project.Id);
-                    }
+                    //foreach (string id in memberIds)
+                    //{
+                    //    await _projectService.RemoveUserFromProjectAsync(id, model.Project.Id);
+                    //}
 
                     foreach (string id in model.SelectedUsers)
                     {
@@ -417,21 +441,34 @@ namespace MVC_BugTracker.Controllers
 
             var time = Created.Hour;
 
-            var shiftTime = "";
-            if (time > 5 && time < 15)
-            {
-                shiftTime = "1st-shift";
-            }
+            
 
-            if (time > 14 && time < 23)
-            {
-                shiftTime = "2nd-shift";
-            }
+            var shiftByCompanyId = _context.RotationShift.Where(y => y.CompanyId == companyId).ToList();
 
-            if (time > 23 && time < 7)
+            List<RotationShift> presentShift = new();
+            TimeSpan currentTime = DateTime.Now.TimeOfDay;
+
+            if(shiftByCompanyId.Count > 0)
             {
-                shiftTime = "3rd-shift";
+                presentShift = shiftByCompanyId
+                                .Where(s => s.StartTime <= s.EndTime
+                                         ? currentTime >= s.StartTime && currentTime <= s.EndTime
+                                         : currentTime >= s.StartTime || currentTime <= s.EndTime)
+                                            .ToList();
             }
+           
+
+            //if(shiftByCompanyId.Count > 0)
+            //{
+            //    foreach (var shift in shiftByCompanyId)
+            //    {
+            //        if (time >= shift.StartTime.Hours && time < shift.EndTime.Hours)
+            //        {
+            //            presentShift.Add(shift);
+            //        }
+            //    }
+            //}
+
 
             // *** MULTISELECT ***
 
@@ -440,10 +477,14 @@ namespace MVC_BugTracker.Controllers
 
             try
             {
-                //List<BTUser> pm = await _infoService.GetMembersInRoleAsync(Roles.ProjectManager.ToString(), companyId, shiftTime);
+                if (presentShift.Count > 0)
+                {
+                    List<BTUser> pm = await _infoService.GetMembersInRoleAsync(Roles.ProjectManager.ToString(), companyId, presentShift);
+                    users = pm;
+                }
 
-                List<BTUser> pm = await _infoService.GetMembersInRoleAsyncAdmin(Roles.ProjectManager.ToString(), companyId);
-                users = pm;
+                //List<BTUser> pm = await _infoService.GetMembersInRoleAsyncAdmin(Roles.ProjectManager.ToString(), companyId);
+               
             }
             catch (Exception ex)
             {
@@ -606,6 +647,27 @@ namespace MVC_BugTracker.Controllers
             //return RedirectToAction("AllProjects");
             return Redirect(returnUrl);
         }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Remove(string id,int projectId)
+        {
+            var returnUrl = Request.Headers["Referer"].ToString();
+            //await _projectService.RemoveProjectManagerAsync(id);
+            var project = await _context.Project
+               .Include(p => p.Members)
+             
+               .FirstOrDefaultAsync(m => m.Id == projectId);
+           
+            var members=project.Members.Where(x => x.Id == id).FirstOrDefault();
+           
+                project.Members.Remove(members);
+            await _context.SaveChangesAsync();
+            return Redirect(returnUrl);
+        }
+
 
 
         private bool ProjectExists(int id)

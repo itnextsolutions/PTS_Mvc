@@ -12,7 +12,7 @@ namespace MVC_BugTracker.Data
         public static string GetConnectionString(IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
-            var databaseUrl = "postgres://postgres:145556686@127.0.0.1:5433/bugtracker";//Environment.GetEnvironmentVariable("DATABASE_URL");
+            var databaseUrl = "postgres://postgres:1234@127.0.0.1:5432/bugtracker";//Environment.GetEnvironmentVariable("DATABASE_URL");
 
             return string.IsNullOrEmpty(databaseUrl) ? connectionString : BuildConnectionString(databaseUrl); ;
         }

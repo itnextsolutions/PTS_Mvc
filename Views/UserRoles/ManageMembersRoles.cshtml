@@ -82,12 +82,27 @@
                 {
                     <tr>
                         <td>@btusers.BTUser.FullName</td>
-                        <td>
+                       @*  <td>
                             <form asp-controller="UserRoles" asp-action="ManageUserRoles" method="post" onsubmit="showSuccessModal();">    
                                 <input type="hidden" asp-for="@btusers.BTUser.Id">
                                 <select asp-for="@btusers.SelectedRoles" class="form-control" asp-items="@btusers.Roles" multiple="multiple"></select>
-                                @* <button type="submit" class="btn btn-primary btn-sm">Assign Roles</button > *@
+                                <button type="submit" class="btn btn-primary btn-sm">Assign Roles</button >
                             </form>
+                        </td> *@
+                        <td>
+                           
+                                @foreach (var btUserRole in btusers.Roles.SelectedValues)
+                                {
+                                    <ul>
+                                        <li>
+                                            @btUserRole
+
+                                        </li>
+                                    </ul>
+
+                                }
+                           
+
                         </td>
                         <td>
                             <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#userDetailsModal-@btusers.BTUser.Id">Details</button>
@@ -152,9 +167,9 @@
                                           @* <<<< SCRIPTS >>>> *@
 
 
-@* <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.6/dist/sweetalert2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.6/dist/sweetalert2.min.js"></script> *@
-
+@* 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.all.min.js"></script> *@
 @section Scripts {
     <script>
             $(document).ready(function () {
@@ -185,31 +200,31 @@
                     FullName: FullName
                 },
                 success: function (data) {
-                    // if (data.success) {
-                    //     Swal.fire({
-                    //         title: 'Success',
-                    //         text: `Role assigned successfully to '${FullName}' as a '${roleName}'`,
-                    //         icon: 'success',
-                    //         confirmButtonText: 'Close'
-                    //     }).then(() => {
-                    //         location.reload();
-                    //     });
-                    // } else {
-                    //     Swal.fire({
-                    //         title: 'Error',
-                    //         text: `Error assigning role: ${data.message}`,
-                    //         icon: 'error',
-                    //         confirmButtonText: 'Close'
-                    //     });
-                    // }
-                        location.reload();
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: `Role assigned successfully to '${FullName}' as a '${roleName}'`,
+                            icon: 'success',
+                            confirmButtonText: 'done'
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: `Error assigning role: ${data.message}`,
+                            icon: 'error',
+                            confirmButtonText: 'Ok'
+                        });
+                    }
+                       
                 },
                 error: function (error) {
                     Swal.fire({
                         title: 'Error',
                         text: 'An error occurred while processing the request.',
                         icon: 'error',
-                        confirmButtonText: 'Close'
+                        confirmButtonText: 'Ok'
                     });
                 }
             });
@@ -225,31 +240,31 @@
                     FullName: FullName
                 },
                 success: function (data) {
-                    // if (data.success) {
-                    //     Swal.fire({
-                    //         title: 'Remove',
-                    //         text: `'${roleName}' Role has been successfully removed from '${FullName}'`,
-                    //         icon: 'success',
-                    //         confirmButtonText: 'Close'
-                    //     }).then(() => {
-                    //         location.reload();
-                    //     });
-                    // } else {
-                    //     Swal.fire({
-                    //         title: 'Error',
-                    //         text: `Error removing role: ${data.message}`,
-                    //         icon: 'error',
-                    //         confirmButtonText: 'Close'
-                    //     });
-                    // }
-                    location.reload();
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Remove',
+                            text: `'${roleName}' Role has been successfully removed from '${FullName}'`,
+                            icon: 'success',
+                            confirmButtonText: 'done'
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: `Error removing role: ${data.message}`,
+                            icon: 'error',
+                            confirmButtonText: 'Ok'
+                        });
+                    }
+                   
                 },
                 error: function (error) {
                     Swal.fire({
                         title: 'Error',
                         text: 'An error occurred while processing the request.',
                         icon: 'error',
-                        confirmButtonText: 'Close'
+                        confirmButtonText: 'Ok'
                     });
                 }
             });

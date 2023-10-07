@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using MVC_BugTracker.Data;
 using MVC_BugTracker.Models;
 using MVC_BugTracker.Models.Enums;
+using MVC_BugTracker.Models.ViewModels;
 using SixLabors.ImageSharp;
 
 namespace MVC_BugTracker.Areas.Identity.Pages.Account
@@ -119,6 +120,13 @@ namespace MVC_BugTracker.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
+
+                    byte[] encData_byte = new byte[Input.Password.Length];
+                    encData_byte = System.Text.Encoding.UTF8.GetBytes(Input.Password);
+                    string encodedData = Convert.ToBase64String(encData_byte);
+
+                    user.Password = encodedData;
+
                     _logger.LogInformation("User created a new account with password.");
 
 

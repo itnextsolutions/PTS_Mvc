@@ -13,7 +13,7 @@ namespace MVC_BugTracker.Models
         // PK/FK
         public int Id { get; set; }
 
-        [Required]
+  
         [Display(Name = "Client Priority")]
         public int? ProjectPriorityId { get; set; }
         public int? CompanyId { get; set; }
@@ -61,6 +61,6 @@ namespace MVC_BugTracker.Models
         public virtual ICollection<BTUser> Members { get; set; } = new HashSet<BTUser>();
         public virtual ICollection<Ticket> Tickets { get; set; } = new HashSet<Ticket>();
 
-        public virtual ICollection<RotationShift> Shifts { get; set; } = new HashSet<RotationShift>();
+        //public virtual ICollection<RotationShift> Shifts { get; set; } = new HashSet<RotationShift>();
     }
 }

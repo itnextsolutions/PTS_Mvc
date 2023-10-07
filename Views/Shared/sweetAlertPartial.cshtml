@@ -1,0 +1,63 @@
+﻿
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.all.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+    <div id="content">
+        @RenderBody()
+    </div>
+
+    <!-- Common JavaScript code for handling form submissions with SweetAlert -->
+    <script>
+        function handleFormSubmission() {debugger
+            $('form').submit(function (event) {
+                event.preventDefault();
+
+                var form = $(this);
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: form.attr('method'),
+                    data: form.serialize(),
+                    success: function (result) {
+                        debugger
+                        if (result.success) {
+                            // Success
+                            Swal.fire({
+                                title: 'Success',
+                                text: result.message,
+                                icon: 'success',
+                                // timer: 3000,
+                                confirmButtonText: 'done'
+                            }).then(function () {
+                                // Redirect or perform other actions after success
+                                window.location.href = result.url;
+                            });
+                        } else {
+                            // Error
+                            Swal.fire({
+                                title: 'Error',
+                                text: result.errors,
+                                icon: 'error',
+                            });
+                        }
+                    },
+                    error: function () {
+                        // Handle AJAX error here
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>

@@ -6,6 +6,7 @@
 
 @{
     ViewData["Title"] = "Edit Project";
+    // Layout = "~/Views/Shared/sweetAlertPartial.cshtml";
 }
 
 @* <h1>@Model.Name</h1> *@
@@ -64,7 +65,7 @@
 
 
                     <div class="form-group float-right">
-                        <input type="submit" value="Save" class="btn btn-primary" />
+                        <input type="submit" value="Save" onclick="handleFormSubmission()" class="btn btn-primary" />
                         <a class="btn btn-secondary" asp-action="AllProjects">Cancel</a>
                     </div>
                 </div>
@@ -82,7 +83,46 @@
 <div>
     @*<a asp-action="AllProjects">Back to Project List</a>*@
 </div>
+<script>
+    $(document).ready(function () {
+        $('form').submit(function (event) {
+            event.preventDefault();
 
+            var form = $(this);
+
+            $.ajax({
+                url: form.attr('action'),
+                type: form.attr('method'),
+                data: form.serialize(),
+                success: function (result) {
+                    debugger
+                    if (result.success) {
+                        // Success
+                        Swal.fire({
+                            title: 'Success',
+                            text: result.message,
+                            icon: 'success',
+                            // timer: 3000,
+                        }).then(function () {
+                            // Redirect or perform other actions after success
+                            window.location.href = result.url;
+                        });
+                    } else {
+                        // Error
+                        Swal.fire({
+                            title: 'Error',
+                            text: result.message,
+                            icon: 'error',
+                        });
+                    }
+                },
+                error: function () {
+                    // Handle AJAX error here
+                }
+            });
+        });
+    });
+</script>
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

@@ -128,7 +128,7 @@ namespace MVC_BugTracker.Controllers
             var destination = viewModel.Email;
             var subject = "Company Invite";
 
-
+            var returnUrl = Request.Headers["Referer"].ToString();
             await _emailService.SendEmailAsync(destination, subject, body);
             if (ModelState.IsValid)
             {
@@ -201,20 +201,30 @@ namespace MVC_BugTracker.Controllers
                     //await _userManager.AddToRoleAsync(user, Roles.Developer.ToString());
                     _context.Update(user);
                     _context.SaveChanges();
-                    return RedirectToAction("Dashboard", "Home");
+                    //return RedirectToAction("Dashboard", "Home");
 
                 }
-                foreach (var error in result.Errors)
+               else
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                    return View("Create");
+                    //ModelState.AddModelError(string.Empty, error.Description);
+                    //return View("Create");
+                    var errorsResult = result.Errors.Select(e => e.Description)
+                                  .ToList();
+                    return Json(new { success = false, errors = errorsResult });
                 }
+                return Json(new { success = true, message = "Members have been successfully invited!"});
 
-         
+
 
                 //return RedirectToAction("Dashboard", "Home");
             }
-            return RedirectToAction("Create", "Invites");
+            //return RedirectToAction("Create", "Invites");
+
+
+            var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                  .Select(e => e.ErrorMessage)
+                                  .ToList();
+            return Json(new { success = false, errors = errors });
         }
 
 

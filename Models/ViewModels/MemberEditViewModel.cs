@@ -12,7 +12,10 @@ namespace MVC_BugTracker.Models.ViewModels
        public string Id { get; set; }
 
         public string UserName { get; set; }
-
+        [Required]
+        [Phone]
+        [RegularExpression("^([0-9]{10})$", ErrorMessage = "Invalid Phone Number.")]
+        //[RegularExpression("^(\\+\\d{1, 2}\\s)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-] ?\\d{4}$")]
         public string PhoneNumber { get; set; }
 
             //public BTUser user { get; set; } = new();
@@ -35,9 +38,9 @@ namespace MVC_BugTracker.Models.ViewModels
             [Display(Name = "Last Name")]
             public string LastName { get; set; }
 
-           
-         
 
+
+        [Required]
             [Display(Name = "Shift")]
             public int ShiftId { get; set; }
 
