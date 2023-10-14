@@ -164,7 +164,8 @@ namespace MVC_BugTracker.Controllers
             var errors = ModelState.Values.SelectMany(v => v.Errors)
                                   .Select(e => e.ErrorMessage)
                                   .ToList();
-            return Json(new { success = false, errors = errors });
+            // return Json(new { success = false, errors = errors });
+            return Json(new { success = false, errors = "Please Fill All Required Fields!" });
         }
 
         // GET: Projects/Edit/5
@@ -305,18 +306,7 @@ namespace MVC_BugTracker.Controllers
                        : currentTime >= s.StartTime || currentTime <= s.EndTime)
            .ToList();
 
-            //if (shiftByCompanyId.Count>0) 
-            //{
-
-            //    foreach (var shift in shiftByCompanyId)
-            //    {
-            //        if ((time >= shift.StartTime.Hours || time < shift.EndTime.Hours) && (time < shift.StartTime.Hours || time < shift.EndTime.Hours))
-            //        {
-            //            presentShift.Add(shift);
-            //        }
-            //    }
-            //}
-
+          
 
             // *** MULTISELECT ***
             // ?? How to return a null multiselect
@@ -458,16 +448,7 @@ namespace MVC_BugTracker.Controllers
             }
            
 
-            //if(shiftByCompanyId.Count > 0)
-            //{
-            //    foreach (var shift in shiftByCompanyId)
-            //    {
-            //        if (time >= shift.StartTime.Hours && time < shift.EndTime.Hours)
-            //        {
-            //            presentShift.Add(shift);
-            //        }
-            //    }
-            //}
+          
 
 
             // *** MULTISELECT ***
@@ -553,10 +534,7 @@ namespace MVC_BugTracker.Controllers
 
 
 
-        //private IActionResult RedirectAction(string v1, string v2)
-        //{
-        //    throw new NotImplementedException();
-        //}
+       
 
 
         //// GET: Projects/Delete/5

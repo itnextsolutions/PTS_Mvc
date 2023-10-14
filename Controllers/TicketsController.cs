@@ -293,26 +293,7 @@ namespace MVC_BugTracker.Controllers
 
                 await _context.AddAsync(model);
                 await _context.SaveChangesAsync();
-                //object value = await _context.Ticket.AddAsync(viewmodel);
-
-                //List<TicketTask> modelTask = new List<TicketTask>();
-                //{
-                //    modelTask = viewmodel.TaskViewModels.Select(t => new TicketTask
-                //    {
-                //        TaskTitle = t.TaskTitle,
-                //        TaskDescription = t.TaskDescription,
-                //        TicketId = model.Id
-                //    }).ToList();
-
-                //};
-
-                //var elementsToBeAdded = modelTask.Where(a => a.TicketId == model.Id );
-                //_context.TicketTask.AddRange(elementsToBeAdded);
-
-
-                //await _context.AddAsync(modelTask);
-                //await _context.SaveChangesAsync();
-
+               
                 if (viewmodel.TaskViewModels != null)
                 {
                     foreach (var i in viewmodel.TaskViewModels)
@@ -370,7 +351,6 @@ namespace MVC_BugTracker.Controllers
 
                 #endregion
 
-                //TempData["Success"] = "<script>alert('User created successfully');</script>";
 
                 //return RedirectToAction("Details", "Tickets", new { id = ticket.Id });
                 //return Redirect(returnUrl);
@@ -378,18 +358,14 @@ namespace MVC_BugTracker.Controllers
                 //return View();
             }
 
-            //ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Id", ticket.ProjectId);
-            //ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "Id", ticket.DeveloperUserId);
-            //ViewData["OwnerUserId"] = new SelectList(_context.Users, "Id", "Id", ticket.OwnerUserId);
-            //ViewData["TicketPriorityId"] = new SelectList(_context.Set<TicketPriority>(), "Id", "Id", ticket.TicketPriorityId);
-            //ViewData["TicketStatusId"] = new SelectList(_context.Set<TicketStatus>(), "Id", "Id", ticket.TicketStatusId);
-
+        
             //return View(ticket);
             //return RedirectToAction("AllTickets");
             var errors = ModelState.Values.SelectMany(v => v.Errors)
                                .Select(e => e.ErrorMessage)
                                .ToList();
-            return Json(new { success = false, errors = errors });
+            // return Json(new { success = false, errors = errors });
+            return Json(new { success = false, errors = "Please Fill All Required Fields!" });
         }
 
         // Assign Ticket
@@ -642,31 +618,7 @@ namespace MVC_BugTracker.Controllers
             if (ModelState.IsValid)
             {
 
-                //if (oldticketTask.Count != ticketTaskListOld.Count)
-                //{
-
-                // //   var missingIds = oldticketTask
-                // //.Select(x => x.TicketTaskId)
-                // //.Except(ticketTaskListOld.Select(y => y.TicketTaskId))
-                // //.ToList();
-
-                //    var removeTaskList = oldticketTask.Where(ot => !ticketTaskListOld.Any(tt => tt.TicketTaskId == ot.TicketTaskId)).ToList();
-
-
-                //    if(removeTaskList != null)
-                //    {
-                //        foreach(var task in removeTaskList)
-                //        {
-                //            if (task != null)
-                //            {
-                //                _context.TicketTask.Remove(task);
-                //            }
-                //        }
-                //    }
-
-
-
-                //}
+               
 
                 List<TicketTask> ticketTaskListOld = new();
                 for (int i = 0; i < taskCountEdit; i++)
@@ -727,54 +679,7 @@ namespace MVC_BugTracker.Controllers
                     _context.Update(viewmodel.tic);
                     await _context.SaveChangesAsync();
 
-                    ////foreach (var taskViewModel in viewmodel.TaskViewModels)
-                    ////{
-                    ////    if (taskViewModel.TicketTaskId != 0  && taskViewModel.TicketTaskId!=null)
-                    ////    {
-
-
-
-                    ////        TicketTask existingTask = await _context.TicketTask
-
-                    ////                         .AsNoTracking().FirstOrDefaultAsync(t => t.TicketTaskId == taskViewModel.TicketTaskId);
-
-                    ////        if (existingTask.TaskDescription != taskViewModel.TaskDescription && existingTask.TaskTitle != taskViewModel.TaskTitle)
-                    ////        {
-
-                    ////            //var existingTask = await _infoService.GetTicketTaskbyz(taskViewModel.TicketTaskId); // Replace with your actual method to get the task
-                    ////            if (existingTask != null)
-                    ////            {
-                    ////                // Update properties
-                    ////                existingTask.TaskTitle = taskViewModel.TaskTitle;
-                    ////                existingTask.TaskDescription = taskViewModel.TaskDescription;
-                    ////                existingTask.TicketId = viewmodel.tic.Id;
-                    ////                existingTask.TicketTaskId = taskViewModel.TicketTaskId;
-                    ////                // Update the task in the database
-                    ////                // Replace with your actual update method
-                    ////                await _infoService.UpdateTicketTask(existingTask);
-
-                    ////            }
-
-                    ////        }
-                    ////    }
-                    ////    else
-                    ////    {
-                    ////        // Task with TicketTaskId doesn't exist, create a new task
-                    ////        var newTask = new TicketTask
-                    ////        {
-                    ////            TaskTitle = taskViewModel.TaskTitle,
-                    ////            TaskDescription = taskViewModel.TaskDescription,
-                    ////            TicketId = viewmodel.tic.Id,
-                    ////            // Set other properties as needed
-                    ////        };
-
-                    ////        // Create the new task in the database
-                    ////       _context.AddAsync(newTask); // Replace with your actual create method
-                    ////        await _context.SaveChangesAsync();
-                    ////    }
-                    ////    await _context.SaveChangesAsync();
-                    ////}
-
+                  
                     if (ticketTaskListOld.Count > 0)
                     {
                         foreach (var taskViewModelold in ticketTaskListOld)
@@ -920,14 +825,7 @@ namespace MVC_BugTracker.Controllers
               
             }
 
-            // Refactor to match restrictions in the GET method for select list
-            //ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Id", ticket.ProjectId);
-            //ViewData["TicketPriorityId"] = new SelectList(_context.Set<TicketPriority>(), "Id", "Id", ticket.TicketPriorityId);
-            //ViewData["TicketStatusId"] = new SelectList(_context.Set<TicketStatus>(), "Id", "Id", ticket.TicketStatusId);
-            //ViewData["TicketTypeId"] = new SelectList(_context.Set<TicketType>(), "Id", "Id", ticket.TicketTypeId);
-            //ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "Id", ticket.DeveloperUserId);
-            //ViewData["OwnerUserId"] = new SelectList(_context.Users, "Id", "Id", ticket.OwnerUserId);
-
+         
             //return View(viewmodel);
             var errors = ModelState.Values.SelectMany(v => v.Errors)
                                     .Select(e => e.ErrorMessage)
@@ -1026,11 +924,7 @@ namespace MVC_BugTracker.Controllers
          
             var returnUrl = Request.Headers["Referer"].ToString();
 
-            //var project = await _context.Project.FindAsync(id);
-            //_context.Project.Remove(project);
-            //await _context.SaveChangesAsync();
-            ////return RedirectToAction("AllProjects");
-            //return Redirect(returnUrl);
+           
 
 
 

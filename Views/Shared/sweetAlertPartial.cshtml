@@ -19,7 +19,7 @@
 
     <!-- Common JavaScript code for handling form submissions with SweetAlert -->
     <script>
-        function handleFormSubmission() {debugger
+        function handleFormSubmission() {
             $('form').submit(function (event) {
                 event.preventDefault();
 
@@ -30,7 +30,7 @@
                     type: form.attr('method'),
                     data: form.serialize(),
                     success: function (result) {
-                        debugger
+                        
                         if (result.success) {
                             // Success
                             Swal.fire({
@@ -38,7 +38,7 @@
                                 text: result.message,
                                 icon: 'success',
                                 // timer: 3000,
-                                confirmButtonText: 'done'
+                                confirmButtonText: 'Done'
                             }).then(function () {
                                 // Redirect or perform other actions after success
                                 window.location.href = result.url;

@@ -115,19 +115,7 @@ namespace MVC_BugTracker.Controllers
                 user.shift = userShift.ShiftInterval;
             }
             
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
-
-
-            //    .Include(u => u.FirstName)
-            //    .Include(u => u.LastName)
-            //    .Include(u => u.UserName)
-            //    .Include(u => u.Email)
-            //    .Include(u => u.PhoneNumber)
-            //    .Where(u => u.Id == id)
-            //    .FirstOrDefaultAsync();
+           
 
             if (user == null)
             {
@@ -144,26 +132,7 @@ namespace MVC_BugTracker.Controllers
             var user = await _context.Users
             .Where(u => u.Id == id)
             .FirstOrDefaultAsync();
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //string userId = _userManager.GetUserId(User);
-            //ViewData["CurrentUserId"] = userId;
-
-            //var user = await _context.Users
-            //    .Include(u => u.FirstName)
-            //    .Include(u => u.LastName)
-            //    .Include(u => u.UserName)
-            //    .Include(u => u.Email)
-            //    .Include(u => u.PhoneNumber)           
-            //    .ThenInclude(h => h.User)
-            //.Include(t => t.Comments)
-            //    .ThenInclude(c => c.User)
-            //.Include(t => t.Comments)
-            //    .ThenInclude(c => c.Ticket)
-            //.FirstOrDefaultAsync(m => m.Id == id);
+           
             if (user == null)
             {
                 return NotFound();
@@ -176,40 +145,6 @@ namespace MVC_BugTracker.Controllers
 
 
 
-        //// GET: Members/Create
-        //public async Task<IActionResult> Create(int? projId)
-        //{
-
-        //    // Get Current User
-        //    BTUser btUser = await _userManager.GetUserAsync(User);
-
-        //    // Get Current User Company Id
-        //    int companyId = User.Identity.GetCompanyId().Value;
-
-        //    Ticket ticket = new();
-
-        //    if (projId == null)
-        //    {
-        //        if (User.IsInRole("Admin"))
-        //        {
-        //            ViewData["ProjectId"] = new SelectList(await _projectService.GetAllProjectsByCompany(companyId), "Id", "Name");
-        //        }
-        //        else
-        //        {
-        //            ViewData["ProjectId"] = new SelectList(await _projectService.ListUserProjectsAsync(btUser.Id), "Id", "Name");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        ticket.ProjectId = (int)projId;
-        //    }
-
-        //    ViewBag.returnUrl = Request.Headers["Referer"].ToString();
-        //    ViewData["TicketPriorityId"] = new SelectList(_context.Set<TicketPriority>(), "Id", "Name");
-        //    ViewData["TicketTypeId"] = new SelectList(_context.Set<TicketType>(), "Id", "Name");
-
-        //    return View(ticket);
-        //}
 
 
         public async Task <IActionResult> ChangePassword(string id)
@@ -298,12 +233,7 @@ namespace MVC_BugTracker.Controllers
                         }
                     }
                   
-                    // Update the properties of the existingUser entity.
-                    //existingUser.FirstName = user.FirstName;
-                    //existingUser.LastName = user.LastName;
-                    //existingUser.UserName = user.UserName;
-                    //existingUser.PhoneNumber = user.PhoneNumber;
-                    //existingUser.Email = user.Email;
+                  
 
                     // Save changes to the database.
                     await _context.SaveChangesAsync();
@@ -463,12 +393,7 @@ namespace MVC_BugTracker.Controllers
 
                             existingUser.Password = encodedData;
                         }
-                        // Update the properties of the existingUser entity.
-                        //existingUser.FirstName = user.FirstName;
-                        //existingUser.LastName = user.LastName;
-                        //existingUser.UserName = user.UserName;
-                        //existingUser.PhoneNumber = user.PhoneNumber;
-                        //existingUser.Email = user.Email;
+                     
 
                         // Save changes to the database.
                         await _context.SaveChangesAsync();
@@ -526,13 +451,7 @@ namespace MVC_BugTracker.Controllers
             var user = await _context.Users
            .Where(u => u.Id == id)
            .FirstOrDefaultAsync();
-            //var users = await _context.Users
-            //    .Include(t => t.FirstName)
-            //    .Include(t => t.LastName)
-            //    .Include(t => t.UserName)
-            //    .Include(t => t.Email)
-            //    .Include(t => t.PhoneNumber)
-            //    .FirstOrDefaultAsync(m => m.Id == id);
+           
             if (user == null)
             {
                 return NotFound();

@@ -30,9 +30,10 @@
                     <td class="text-center">@shift.StartTime</td>
                     <td class="text-center">@shift.EndTime</td>
                     <td class="text-center">
-                        <a onclick="openEditModal(@shift.Id)">Edit</a> |
-                        <a onclick="openDetailModal(@shift.Id)">Details</a> |
-                        <a onclick="openDeleteModal(@shift.Id)">Delete</a>
+                        <button class="btn-xs btn-primary" onclick="openEditModal(@shift.Id)">Edit</button> 
+                        <button class="btn-xs btn-danger" onclick="openDeleteModal(@shift.Id)">Delete</button> 
+                        <button class="btn-xs btn-primary" onclick="openDetailModal(@shift.Id)">Details</button> 
+                        
                     </td>
                 </tr>
             }

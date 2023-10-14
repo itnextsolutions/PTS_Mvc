@@ -168,7 +168,7 @@
                 <div class="col">
                     <hr />
                     <div class="form-group float-right">
-                        <input type="submit" value="Create" onclick="handleFormSubmission()" class="btn btn-primary" />
+                        <input type="submit" value="Create"  class="btn btn-primary" />
                         <a class="btn btn-secondary" href="@ViewBag.returnUrl">Cancel</a>
                     </div>
                 </div>
@@ -204,7 +204,7 @@
                 type: form.attr('method'),
                 data: form.serialize(),
                 success: function (result) {
-                    debugger
+                    
                     if (result.success) {
                         // Success
                         Swal.fire({

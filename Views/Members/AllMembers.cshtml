@@ -73,18 +73,18 @@
 
                                     <td>
                                         @* <a asp-action="Details" asp-route-id="@item.Id">Details</a> *@
-                                        <a  onclick="openDetailModal('@item.Id')">Details</a> |
+                                        <button class="btn-xs btn-primary" onclick="openDetailModal('@item.Id')">Details</button> 
                                         @* <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> *@
-                                        <a  style="cursor:pointer" onclick="openEditModal('@item.Id')">Edit</a>
+                                        <button class="btn-xs btn-primary" style="cursor:pointer" onclick="openEditModal('@item.Id')">Edit</button> 
 
                                         @if (User.IsInRole("Admin"))
                                         {
                                             @* <a asp-action="Delete" asp-route-id="@item.Id"> | Delete</a> *@
-                                            <a  onclick="openDeleteModal('@item.Id')"> | Delete</a>
+                                            <button class="btn-xs btn-danger" onclick="openDeleteModal('@item.Id')"> Delete</button> 
 
                                             @* <a asp-action="ChangePassword" asp-route-id="@item.Id"> | Change Password</a> *@
 
-                                            <a  onclick="openChangePassword('@item.Id')"> | Change Password</a>
+                                            <button class="btn-xs btn-primary" onclick="openChangePassword('@item.Id')"> Change Password</button>
                                         }
                                     </td>
                                 </tr>
@@ -260,9 +260,7 @@
       
 
 
-            // Function to toggle password visibility
-            // togglePassword.addEventListener("click", function () {
-            //     console.log(passwordInput)
+           
 
            function show()
             {
@@ -307,18 +305,6 @@
             }
                 
         
-            // Function to copy the password to the clipboard
-            // copyPassword.addEventListener("click", function () {
-            //     passwordInput.select();
-            //     document.execCommand("copy");
-            //     // Optionally, you can provide user feedback here
-            //     alert("Password copied to clipboard");
-            // });
-
-
-   
-
-            //}
                 
 
 

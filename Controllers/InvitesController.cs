@@ -153,25 +153,7 @@ namespace MVC_BugTracker.Controllers
                 _context.Invite.Add(model);
                 _context.SaveChanges();
 
-                //var shiftTimeStart = viewModel?.StartDate.Value.Hour;
-
-                //var shiftTimeEnd = viewModel?.DueDate.Value.Hour;
-
-                //var shiftTime = "";
-                //if (shiftTimeStart > 5 && shiftTimeEnd < 15)
-                //{
-                //    shiftTime = "1st-shift";
-                //}
-
-                //if (shiftTimeStart > 13 && shiftTimeEnd < 23)
-                //{
-                //    shiftTime = "2nd-shift";
-                //}
-
-                //if (shiftTimeStart > 21 && shiftTimeEnd < 7)
-                //{
-                //    shiftTime = "3rd-shift";
-                //}
+               
 
                 //base64Encode password
 
@@ -224,7 +206,9 @@ namespace MVC_BugTracker.Controllers
             var errors = ModelState.Values.SelectMany(v => v.Errors)
                                   .Select(e => e.ErrorMessage)
                                   .ToList();
-            return Json(new { success = false, errors = errors });
+            // return Json(new { success = false, errors = errors });
+
+            return Json(new { success = false, errors = "Please Fill All Required Fields!" });
         }
 
 

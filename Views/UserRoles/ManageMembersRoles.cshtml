@@ -105,10 +105,10 @@
 
                         </td>
                         <td>
-                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#userDetailsModal-@btusers.BTUser.Id">Details</button>
+                            @* <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#userDetailsModal-@btusers.BTUser.Id">Details</button> *@
                             <div class="btn-group">
                                 <button type="button" class="btn btn-success btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Add
+                                    Add Role
                                 </button>
                                 <div class="dropdown-menu">
                                     @foreach (var role in btusers.Roles)
@@ -133,7 +133,7 @@
                        </td>
                    
 
-                    <div class="modal fade" id="userDetailsModal-@btusers.BTUser.Id" tabindex="-1" role="dialog" aria-labelledby="userDetailsModalLabel">
+                    @* <div class="modal fade" id="userDetailsModal-@btusers.BTUser.Id" tabindex="-1" role="dialog" aria-labelledby="userDetailsModalLabel">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                     <div class="modal-header" style="background-color: #007bff!important;">
@@ -154,7 +154,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> *@
                     </tr>
                 }
             </tbody>
@@ -205,7 +205,7 @@
                             title: 'Success',
                             text: `Role assigned successfully to '${FullName}' as a '${roleName}'`,
                             icon: 'success',
-                            confirmButtonText: 'done'
+                            confirmButtonText: 'Done'
                         }).then(() => {
                             location.reload();
                         });
@@ -245,7 +245,7 @@
                             title: 'Remove',
                             text: `'${roleName}' Role has been successfully removed from '${FullName}'`,
                             icon: 'success',
-                            confirmButtonText: 'done'
+                            confirmButtonText: 'Done'
                         }).then(() => {
                             location.reload();
                         });

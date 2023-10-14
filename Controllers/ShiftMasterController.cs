@@ -64,7 +64,8 @@ namespace MVC_BugTracker.Controllers
             var errors = ModelState.Values.SelectMany(v => v.Errors)
                       .Select(e => e.ErrorMessage)
                       .ToList();
-            return Json(new { success = false, errors = errors });
+            // return Json(new { success = false, errors = errors });
+            return Json(new { success = false, errors = "Please Fill All Required Fields!" });
         }
 
         public async Task<IActionResult> Edit(int? id)

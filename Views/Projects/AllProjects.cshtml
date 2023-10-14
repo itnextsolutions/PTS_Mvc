@@ -320,52 +320,7 @@
         });
 
     </script>
-   @*  <script>
-        function openEditModal(id) {
-            $.get('/Projects/Edit/' + id, function (data) {
-                $('#editModal .modal-body').html(data);
-                $('#editModal').modal('show');
-            });
-        }
-
-        $(document).on('submit', '#editForm', function (e) {
-            e.preventDefault();
-            $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                data: $(this).serialize(),
-                success: function (data) {
-                    $('#editModal').modal('hide');
-                    // You can add code here to update the page or display a success message
-                }
-            });
-        });
-    </script> *@
-   @*  <script>
-        function openEditModal(id) {
-            // Clear the existing content in case the modal was previously used
-            $('#editFormContainer').empty();
-
-            // Load the partial view into the editFormContainer div
-            $.get('/Projects/Edit/' + id, function (data) {
-                $('#editFormContainer').html(data);
-                $('#editModal').modal('show');
-            });
-        }
-
-        $(document).on('submit', '#editForm', function (e) {
-            e.preventDefault();
-            $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                data: $(this).serialize(),
-                success: function (data) {
-                    $('#editModal').modal('hide');
-                    // You can add code here to update the page or display a success message
-                }
-            });
-        });
-    </script> *@
+  
 
     @* perfect1 *@
     <script>
@@ -415,44 +370,5 @@
     </script>
 
 
-  @*   <script>
-        $(document).ready(function () {
-            $('#myForm').submit(function (event) {
-                event.preventDefault();
-
-                var form = $(this);
-
-                $.ajax({
-                    url: form.attr('action'),
-                    type: form.attr('method'),
-                    data: form.serialize(),
-                    success: function (result) {
-                        debugger
-                        if (result.success) {
-                            // Success
-                            Swal.fire({
-                                title: 'Success',
-                                text: result.message,
-                                icon: 'success',
-                                timer: 3000,
-                            }).then(function () {
-                                // Redirect or perform other actions after success
-                                window.location.href = '/Projects/AllProjects';
-                            });
-                        } else {
-                            // Error
-                            Swal.fire({
-                                title: 'Error',
-                                text: result.message,
-                                icon: 'error',
-                            });
-                        }
-                    },
-                    error: function () {
-                        // Handle AJAX error here
-                    }
-                });
-            });
-        });
-    </script> *@
+ 
     }

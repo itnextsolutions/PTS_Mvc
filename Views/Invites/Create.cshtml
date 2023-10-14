@@ -13,18 +13,18 @@
 
                     <div class="col-md-5">
                         <div class="form-group">
-                            <label for="Email">E-Mail</label>
+                            <label for="Email">E-Mail*</label>
                         <input type="email" asp-for="Email" class="form-control" placeholder="Enter  E-mail Id" required />
                         <span asp-validation-for="Email" class="text-danger"></span>
 
                         </div>
                         <div class="form-group">
-                        <label for="FirstName">First Name</label>
+                        <label for="FirstName">First Name*</label>
                         <input type="text" asp-for="FirstName" class="form-control" placeholder="Enter First Name" required />
                         <span asp-validation-for="FirstName" class="text-danger"></span>
                     </div>
                         <div class="form-group">
-                            <label for="inputName">Last Name</label>
+                            <label for="inputName">Last Name*</label>
                         <input type="text" asp-for="LastName" class="form-control" placeholder="Enter Last Name" required />
                         <span asp-validation-for="LastName" class="text-danger"></span>
                         </div>
@@ -63,7 +63,7 @@
                         <span asp-validation-for="ProjectId" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label for="inputMessage">Message</label>
+                            <label for="inputMessage">Message*</label>
                         <textarea asp-for="Message" class="form-control" rows="4" placeholder="Enter Message" required></textarea>
                         <span asp-validation-for="Message" class="text-danger"></span>
                         </div>
@@ -123,7 +123,7 @@
                     type: form.attr('method'),
                     data: form.serialize(),
                     success: function (result) {
-                        debugger
+                        
                         if (result.success) {
                             // Success
                             Swal.fire({
